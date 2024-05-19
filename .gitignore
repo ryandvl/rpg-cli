@@ -1,0 +1,6 @@
+# Python Generated Files
+**/__pycache__
+.pytest_cache
+
+# Enviroments
+.venv
