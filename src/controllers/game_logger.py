@@ -44,6 +44,12 @@ class GameLogger:
     '''
 
     @staticmethod
+    def input(string: str) -> str:
+        result = input(f'{replaceColors(string)}')
+        print(f'\033[{Colors.get('RESET')}m', end='')
+        return result
+
+    @staticmethod
     def print(string: str) -> None:
         print(f'{replaceColors(string)}\033[{Colors.get('RESET')}m')
 

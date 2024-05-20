@@ -1,9 +1,14 @@
+from src.controllers import bar_controller
 from src.controllers.game_logger import GameLogger
-from src.utils.string_manipulation import equalize_string, insert_string, space_string
+from src.utils.string_manipulation import space_string
 
 class ManaOptions:
-    mana: int
-    max_mana: int
+    mana: float
+    max_mana: float
+
+    def __init__(self, max_mana: float) -> None:
+        self.mana = max_mana
+        self.max_mana = max_mana
 
 
 class ManaControl:
@@ -18,21 +23,8 @@ class ManaControl:
         self.mana = options.mana
         self.max_mana = options.max_mana
 
-    def getMessage(self) -> str:
-        mana_size = int(
-            (self.mana / self.max_mana) * 20
-        )
-
-        manaBar = insert_string(
-            equalize_string(f'{self.mana}/{self.max_mana}', 20), "&reset", mana_size
-        )
-
-        return f'&reset&black[&bg_cyan' +\
-            manaBar +\
-            '&reset&black]&reset'
-
     def print(self) -> None:
         GameLogger.print(
-            f'&black⊢ &bold&cyan{space_string('MANA', 10)}' +
-            self.getMessage()
+            f' &black→ &cyan{space_string('Mana', 15)}' +
+            bar_controller.createBar(self.mana, self.max_mana, 'cyan')
         )

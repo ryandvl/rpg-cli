@@ -1,9 +1,14 @@
+from src.controllers import bar_controller
 from src.controllers.game_logger import GameLogger
-from src.utils.string_manipulation import equalize_string, insert_string, space_string
+from src.utils.string_manipulation import space_string
 
 class EnergyOptions:
-    energy: int
-    max_energy: int
+    energy: float
+    max_energy: float
+
+    def __init__(self, max_energy: float) -> None:
+        self.energy = max_energy
+        self.max_energy = max_energy
 
 
 class EnergyControl:
@@ -18,21 +23,8 @@ class EnergyControl:
         self.energy = options.energy
         self.max_energy = options.max_energy
 
-    def getMessage(self) -> str:
-        energy_size = int(
-            (self.energy / self.max_energy) * 20
-        )
-
-        energyBar = insert_string(
-            equalize_string(f'{self.energy}/{self.max_energy}', 20), "&reset", energy_size
-        )
-
-        return f'&reset&black[&bg_yellow' +\
-            energyBar +\
-            '&reset&black]&reset'
-
     def print(self) -> None:
         GameLogger.print(
-            f'&black⊢ &bold&yellow{space_string('ENERGY', 10)}' +
-            self.getMessage()
+            f' &black→ &yellow{space_string('Energy', 15)}' +
+            bar_controller.createBar(self.energy, self.max_energy, 'yellow')
         )

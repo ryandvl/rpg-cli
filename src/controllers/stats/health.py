@@ -1,9 +1,14 @@
+from src.controllers import bar_controller
 from src.controllers.game_logger import GameLogger
-from src.utils.string_manipulation import equalize_string, insert_string, space_string
+from src.utils.string_manipulation import space_string
 
 class HealthOptions:
-    health: int
-    max_health: int
+    health: float
+    max_health: float
+
+    def __init__(self, max_health: float) -> None:
+        self.health = max_health
+        self.max_health = max_health
 
 
 class HealthControl:
@@ -18,23 +23,8 @@ class HealthControl:
         self.health = options.health
         self.max_health = options.max_health
 
-    def getMessage(self) -> str:
-        color = 'bg_green' if self.isPlayer else 'bg_magenta'
-
-        health_size = int(
-            (self.health / self.max_health) * 20
-        )
-
-        healthBar = insert_string(
-            equalize_string(f'{self.health}/{self.max_health}', 20), "&reset", health_size
-        )
-
-        return f'&reset&black[&{color}' +\
-            healthBar +\
-            '&reset&black]&reset'
-
     def print(self) -> None:
         GameLogger.print(
-            f'&black⊢ &bold&magenta{space_string('HEALTH', 10)}' +
-            self.getMessage()
+            f' &black→ &magenta{space_string('Health', 15)}' +
+            bar_controller.createBar(self.health, self.max_health, 'magenta')
         )
