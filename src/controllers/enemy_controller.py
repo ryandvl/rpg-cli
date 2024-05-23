@@ -20,10 +20,12 @@ class EnemyController:
         self.stats = StatsControl(options.stats)
         pass
 
+    def attack(self):
+        pass
+
     def print(self):
         GameLogger.print(\
-            f'&bold&red⚔ {self.name} &reset&black[Lvl. \
-            &bold&white{self.level:02d}&reset&black]\n'
+            f'&bold&red⚔ {self.name} &reset&black[Lvl. &bold&white{self.level:02d}&reset&black]\n'
         )
 
         self.stats.print_all()

@@ -25,6 +25,6 @@ class ShieldControl:
 
     def print(self) -> None:
         GameLogger.print(
-            f' &black→ &blue{space_string('Shield', 15)}' +
+            f' &black→ &blue{space_string('Shield', 10)}' +
             bar_controller.createBar(self.shield, self.max_shield, 'blue')
         )

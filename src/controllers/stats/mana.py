@@ -25,6 +25,6 @@ class ManaControl:
 
     def print(self) -> None:
         GameLogger.print(
-            f' &black→ &cyan{space_string('Mana', 15)}' +
+            f' &black→ &cyan{space_string('Mana', 10)}' +
             bar_controller.createBar(self.mana, self.max_mana, 'cyan')
         )

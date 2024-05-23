@@ -25,6 +25,6 @@ class HealthControl:
 
     def print(self) -> None:
         GameLogger.print(
-            f' &black→ &magenta{space_string('Health', 15)}' +
+            f' &black→ &magenta{space_string('Health', 10)}' +
             bar_controller.createBar(self.health, self.max_health, 'magenta')
         )

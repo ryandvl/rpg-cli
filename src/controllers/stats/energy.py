@@ -25,6 +25,6 @@ class EnergyControl:
 
     def print(self) -> None:
         GameLogger.print(
-            f' &black→ &yellow{space_string('Energy', 15)}' +
+            f' &black→ &yellow{space_string('Energy', 10)}' +
             bar_controller.createBar(self.energy, self.max_energy, 'yellow')
         )
