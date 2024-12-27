@@ -1,32 +1,32 @@
 import curses
 
-from typing import TYPE_CHECKING
+def write(window: curses.window, string: str, x: int, y: int, attr: int = 0):
+    window.move(y, x)
+    window.addstr(string, attr)
 
-if TYPE_CHECKING:
-    from src.controllers.hud_controller import HudController
+def top_left_title(window: curses.window, title: str, attr: int):
+    write(window, title, 1, 0, attr)
 
-def top_left_title(window: curses.window, title: str):
-    y, _ = window.getbegyx()
-
-    window.move(y - 1, 1)
-    window.addstr(title)
-
-def top_center_title(window: curses.window, title: str):
-    y, _ = window.getbegyx()
+def top_center_title(window: curses.window, title: str, attr: int):
     _, width = window.getmaxyx()
 
-    window.move(y - 1, (width - len(title)) // 2)
-    window.addstr(title)
+    write(window, title, (width - len(title)) // 2, 0, attr)
 
-def top_right_title(window: curses.window, title: str):
-    y, _ = window.getbegyx()
+def top_right_title(window: curses.window, title: str, attr: int):
     _, width = window.getmaxyx()
 
-    window.move(y - 1, (width - len(title)) - 1)
-    window.addstr(title)
+    write(window, title, (width - len(title)) - 1, 0, attr)
 
 def attr_on(window: curses.window, attr: int):
     window.attron(attr)
 
 def attr_off(window: curses.window, attr: int):
     window.attroff(attr)
+
+def set_border(window: curses.window, attr: int, hide: bool = False):
+    attr_on(window, attr)
+    if hide:
+        window.border(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')
+    else:
+        window.border()
+    attr_off(window, attr)

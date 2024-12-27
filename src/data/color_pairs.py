@@ -19,5 +19,9 @@ def create_color_pairs(h: 'HudController'):
     c = h.create_color_pair
 
     c('WHITE_BLACK', foreground=WHITE, background=BLACK)
-    c('RED_BLACK', foreground=RED, background=BLACK)
+    c('WHITE_RED', foreground=WHITE, background=RED)
+    c('WHITE_YELLOW', foreground=WHITE, background=YELLOW)
+    c('BLACK_WHITE', foreground=BLACK, background=WHITE)
     c('BLACK_CYAN', foreground=BLACK, background=CYAN)
+    c('RED_BLACK', foreground=RED, background=BLACK)
+    c('RED_WHITE', foreground=RED, background=WHITE)

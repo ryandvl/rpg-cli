@@ -32,6 +32,9 @@ class HudController:
 
         hide_cursor()
 
+        curses.start_color()
+        curses.use_default_colors()
+
         create_color_pairs(self)
         self.load_border()
 
