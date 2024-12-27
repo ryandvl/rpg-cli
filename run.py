@@ -1,4 +1,4 @@
-from src.controllers.action_controller import ActionController
+from src.controllers.game_controller import GameController
 
-if __name__ == '__main__':
-    ActionController().start()
+if __name__ == "__main__":
+    GameController().run()
