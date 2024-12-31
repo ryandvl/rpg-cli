@@ -8,8 +8,8 @@ class ChoicesBar(LayerDTO):
         y, x = window.getbegyx()
 
         attack = window.subwin(3, 10, y + 1, x + 2)
-        attack.bkgd(self.gcp("WHITE_YELLOW"))
-        set_border(attack, self.gcp("WHITE_YELLOW"), True)
-        write(attack, 'ATTACK', 1, 1, self.gcp("RED_WHITE") | curses.A_BOLD)
+        attack.bkgd(self.gcp(0, 12))
+        set_border(attack, self.gcp(0, 12), True)
+        write(attack, 'ATTACK', 1, 1, self.gcp(10, 0) | curses.A_BOLD)
 
         window.refresh()

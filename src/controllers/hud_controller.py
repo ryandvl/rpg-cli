@@ -3,9 +3,9 @@ from types import NoneType
 from typing import TYPE_CHECKING, Callable
 
 from src.data import hud_layers
-from src.data.color_pairs import create_color_pairs
 from src.dto.layer_dto import LayerDTO
 from src.utils.cursor_utils import hide_cursor
+from src.utils.window_utils import set_border
 
 if TYPE_CHECKING:
     from src.controllers.keyboard_controller import KeyboardController
@@ -35,8 +35,8 @@ class HudController:
         curses.start_color()
         curses.use_default_colors()
 
-        create_color_pairs(self)
         self.load_border()
+        self.window.bkgd(0, 1)
 
         hud_layers.create_hud_layers(self)
 
@@ -48,14 +48,25 @@ class HudController:
             
             self.game_controller.delta_time += 1
 
-    def create_color_pair(self, name: str, foreground: int, background: int) -> None:
+    def create_color_pair(self, foreground: int, background: int) -> int:
         newID: int = len(self.color_pairs.keys()) + 1
+        name = str(foreground) + ' ' + str(background)
 
         curses.init_pair(newID, foreground, background)
-        self.color_pairs[name.upper()] = curses.color_pair(newID)
+        self.color_pairs[name] = curses.color_pair(newID)
 
-    def get_color_pair(self, name: str) -> int:
-        return self.color_pairs[name.upper()]
+        return self.color_pairs[name]
+
+    def get_color_pair(self, foreground: int = 0, background: int = 0) -> int:
+        foreground = foreground - 1
+        background = background - 1
+
+        name = str(foreground) + ' ' + str(background)
+
+        if not self.color_pairs.get(name):
+            return self.create_color_pair(foreground, background)
+
+        return self.color_pairs[name]
     
     def create_layer(self, name: str, dto: LayerDTO) -> None:
         if self.hide_layers.get(name):
@@ -75,12 +86,10 @@ class HudController:
         del self.layers[name]
 
     def load_border(self) -> None:
-        self.window.attron(self.get_color_pair("WHITE_BLACK"))
-        self.window.border()
-        self.window.attroff(self.get_color_pair("WHITE_BLACK"))
+        set_border(self.window, self.get_color_pair(0, 0))
 
     def render(self) -> None:
-        for _, layer in self.layers.items():
+        for layer in self.layers.values():
             layer.render()
     
         self.window.refresh()

@@ -31,9 +31,15 @@ def create_bar(current: float | int, total: float | int, size: int = 20):
         (current / total) * size
     )
 
-    bar = equalize_string(
+    bar = insert_string(
+        equalize_string(
             f'{current}/{total}',
             size
-        )
+        ),
+        "|",
+        bar_size
+    )
 
-    return bar
+    first_part, final_part = bar.split('|')
+
+    return (first_part, final_part)

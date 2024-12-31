@@ -43,5 +43,5 @@ class KeyboardController:
                 
             self.window.nodelay(False)
 
-        for _, func in self.inputs.items():
+        for func in self.inputs.values():
             func(self.window, self, key)
