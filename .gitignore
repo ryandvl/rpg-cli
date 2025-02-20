@@ -5,4 +5,8 @@
 # Enviroments
 .venv
 
+# Database
+schema.db
+
+# Backup
 backup/

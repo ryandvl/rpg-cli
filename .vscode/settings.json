@@ -1,10 +1,17 @@
 {
   "python.analysis.autoImportCompletions": true,
-  "python.analysis.typeCheckingMode": "basic",
-  
-  "editor.tabSize": 4,
-  
+
+  "python.analysis.exclude": [
+    "backup"
+  ],
+
   "files.exclude": {
-    "**/__pycache__": true
+    "**/*.pyc": {
+      "when": "$(basename).py"
+    },
+    "**/__pycache__": true,
+    "**/*.pytest_cache": true,
+
+    "backup": true
   }
 }
