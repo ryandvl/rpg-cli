@@ -6,3 +6,4 @@ class WindowInterface(ABC):
     id: int
     name: str
     window: curses.window
+    content: str
