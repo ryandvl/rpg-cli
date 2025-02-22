@@ -17,7 +17,4 @@ class LayerInterface(ABC):
     gcp: GCP
 
     @abstractmethod
-    def __init__(self) -> None: pass
-
-    @abstractmethod
     def render(self) -> None: pass

@@ -2,6 +2,7 @@ import curses
 
 from typing import TYPE_CHECKING
 
+from src.data.hud.gui import attack
 from src.functions.cursor import hide_cursor
 from src.interfaces.layer import LayerInterface
 
@@ -16,7 +17,10 @@ class HudManager:
     keyboard_manager: 'KeyboardManager'
     window_manager: 'WindowManager'
     logger_manager: 'LoggerManager'
+    
+    color_pairs: dict[str, int] = dict()
     layers: dict[str, LayerInterface] = dict()
+    hide_layers: dict[str, LayerInterface] = dict()
 
     def setup(self, game_manager: 'GameManager') -> None:
         self.game_manager = game_manager
@@ -26,7 +30,7 @@ class HudManager:
 
     def wrapper(self, window: curses.window) -> None:
         window_interface = self.window_manager.register_window('default', window)
-        window_interface.window.addstr("Default content")
+        window_interface.window.addstr('Default content')
 
         self.logger_manager.create_window()
 
@@ -37,6 +41,8 @@ class HudManager:
 
         window_interface.window.bkgd(0, 1)
 
+        attack.create_attack_layers(self)
+
         self.render()
 
         while self.game_manager.is_running:
@@ -44,6 +50,26 @@ class HudManager:
 
             self.game_manager.keyboard_manager.update()
             self.game_manager.frames += 1
+
+    def create_color_pair(self, foreground: int, background: int) -> int:
+        newID: int = len(self.color_pairs.keys()) + 1
+        name = str(foreground) + ' ' + str(background)
+
+        curses.init_pair(newID, foreground, background)
+        self.color_pairs[name] = curses.color_pair(newID)
+
+        return self.color_pairs[name]
+
+    def get_color_pair(self, foreground: int = 0, background: int = 0) -> int:
+        foreground = foreground - 1
+        background = background - 1
+
+        name = str(foreground) + ' ' + str(background)
+
+        if not self.color_pairs.get(name):
+            return self.create_color_pair(foreground, background)
+
+        return self.color_pairs[name]
 
     def create_layer(self, layer: LayerInterface) -> None:
         name = layer.name
@@ -53,15 +79,16 @@ class HudManager:
             del self.hide_layers[name]
             return
 
-        layer.window = self.window
+        layer.window = self.window_manager.window
         layer.hud_controller = self
         layer.game_manager = self.game_manager
-        # layer.gcp = self.get_color_pair
+        layer.gcp = self.get_color_pair
         
         self.layers[name] = layer
 
     def render(self) -> None:
-        for layer in self.layers.values():
-            layer.render()
+        if self.window_manager.current_window != 'logs':
+            for layer in self.layers.values():
+                layer.render()
         
         self.window_manager.window.refresh()
