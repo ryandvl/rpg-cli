@@ -15,22 +15,6 @@ class WindowManager:
     current_window: str = 'default'
     last_window: str = 'default'
 
-    def save_window_content(self, name: str) -> str:
-        window_interface = self.get_window(name)
-
-        if not window_interface: return
-        window = window_interface.window
-
-        content = ''
-
-        for y in range(curses.LINES):
-            for x in range(curses.COLS):
-                content += chr(window.inch(y, x) & 255)
-
-        
-
-        return content
-
     def setup(self, game_manager: 'GameManager') -> None:
         self.game_manager = game_manager        
 
@@ -56,6 +40,8 @@ class WindowManager:
         window_interface = self.get_window(name)
 
         if not window_interface: return
+
+        self.last_window = self.current_window
 
         self.window = window_interface.window
         self.current_window = window_interface.name

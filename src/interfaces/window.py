@@ -7,3 +7,4 @@ class WindowInterface(ABC):
     name: str
     window: curses.window
     content: str
+    layers: list

@@ -30,7 +30,6 @@ class HudManager:
 
     def wrapper(self, window: curses.window) -> None:
         window_interface = self.window_manager.register_window('default', window)
-        window_interface.window.addstr('Default content')
 
         self.logger_manager.create_window()
 
