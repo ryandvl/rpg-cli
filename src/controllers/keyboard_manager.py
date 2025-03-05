@@ -18,6 +18,9 @@ class KeyboardManager:
     inputs: dict[str, Func] = dict()
 
     def setup(self, game_manager: 'GameManager') -> None:
+        '''
+        Initialize all necessary modules to run KeyboardManager
+        '''
         self.game_manager = game_manager
         self.window_manager = game_manager.window_manager
         self.logger_manager = game_manager.logger_manager
@@ -25,6 +28,9 @@ class KeyboardManager:
         curses.set_escdelay(25) # Default: 1000ms
 
     def update(self) -> None:
+        '''
+        This is the default behavior, running per tick to detect keys
+        '''
         window = self.window_manager.window
 
         try:
