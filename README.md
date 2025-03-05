@@ -10,10 +10,10 @@ Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and co
 ---
 
 ## 📑 Table of Contents
-1. [About](#about)
-3. [Download Game](#download-game)
-5. [License](#license)
-6. [Author](#author)
+1. [About](#-about)
+3. [Download Game](#-download-game)
+5. [License](#-license)
+6. [Author](#-author)
 
 ---
 
