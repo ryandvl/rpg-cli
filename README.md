@@ -6,6 +6,7 @@
 Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and collect items!
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://shields.io)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ---
 
