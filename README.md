@@ -1,4 +1,4 @@
-# RPG CLI (Command Line Interface)
+# RPG CLI
 
 > [!WARNING]
 > This project is currently under development.
@@ -12,7 +12,7 @@ Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and co
 
 ## 📑 Table of Contents
 1. [About](#-about)
-3. [Download Game](#-download-game)
+3. [Download](#-download)
 5. [License](#-license)
 6. [Author](#-author)
 
@@ -20,11 +20,11 @@ Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and co
 
 ## ❓ About
 
-**RPG CLI** is an RPG Game made with pure [Python](https://www.python.org/) using `curses`.
+**RPG CLI** (Command Line Interface) is an RPG Game made with pure [Python](https://www.python.org/) using `curses`.
 
 ---
 
-## 📥 Download Game
+## 📥 Download
 
 > [!IMPORTANT]
 > **Prerequisite**:
