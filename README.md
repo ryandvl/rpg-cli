@@ -1,6 +1,6 @@
 # RPG CLI (Command Line Interface)
 
-> [!IMPORTANT]
+> [!WARNING]
 > This project is currently under development.
 
 Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and collect items!
@@ -9,7 +9,7 @@ Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and co
 
 ---
 
-## Table of contents
+## 📑 Table of Contents
 1. [About](#about)
 3. [Download Game](#download-game)
 5. [License](#license)
