@@ -9,6 +9,31 @@ Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and co
 
 ---
 
-## About the Project
+## ❓ About
 
 **RPG CLI** is an RPG Game made with pure [Python](https://www.python.org/) using `curses`.
+
+---
+
+## 📥 Download Game
+
+> **Prerequisites**
+> Ensure you have [Python](https://www.python.org/) installed on your machine.
+
+1. Clone this repository or Download ZIP and extract:
+  ```bash
+  git clone https://github.com/ryandvl/rpg-cli.git
+  ```
+2. Navigate to the project directory:
+  ```bash
+  cd rpg-cli
+  ```
+3. Run with `python` or `python3` command:
+  ```bash
+  python run.py
+  ```
+4. Play and have fun.
+
+## 👨‍💻 Authors
+
+- @ryandvl - *Creator and Maintainer*
