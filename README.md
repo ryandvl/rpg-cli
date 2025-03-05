@@ -1,4 +1,8 @@
 # RPG CLI (Command Line Interface)
+
+> [!IMPORTANT]
+> This project is currently under development.
+
 Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and collect items!
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://shields.io)
