@@ -21,6 +21,9 @@ class GameManager:
         self.keyboard_manager.setup(self)
 
     def run(self) -> None:
+        '''
+        Start and run the game, change "is_running" boolean to stop it.
+        '''
         self.is_running = True
 
         wrapper(self.hud_manager.wrapper)
