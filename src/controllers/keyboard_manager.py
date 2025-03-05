@@ -49,6 +49,9 @@ class KeyboardManager:
             func(self.window, self, key)
 
     def check_close_request(self, window: curses.window) -> None:
+        '''
+        Check if the player wants to exit the game
+        '''
         window.nodelay(True)
 
         key_combo = window.getch()
