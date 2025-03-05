@@ -9,6 +9,14 @@ Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and co
 
 ---
 
+## Table of contents
+1. [About](#about)
+3. [Download Game](#download-game)
+5. [License](#license)
+6. [Author](#author)
+
+---
+
 ## ❓ About
 
 **RPG CLI** is an RPG Game made with pure [Python](https://www.python.org/) using `curses`.
@@ -35,6 +43,14 @@ Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and co
   ```
 4. Play and have fun.
 
-## 👨‍💻 Authors
+---
+
+# 📝 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+---
+
+## 👨‍💻 Author
 
 - [ryandvl](https://github.com/ryandvl) - *Creator and Maintainer*
