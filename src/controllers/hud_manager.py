@@ -37,18 +37,20 @@ class HudManager:
         '''
         window_interface = self.window_manager.register_window('default', window)
 
-        self.logger_manager.create_window()
-
         hide_cursor()
 
         curses.start_color()
         curses.use_default_colors()
+
+        self.logger_manager.create_window()
 
         window_interface.window.bkgd(0, 1)
 
         attack.create_attack_layers(self)
 
         self.render()
+
+        self.logger_manager.success('Game started!')
 
         while self.game_manager.is_running:
             self.render()

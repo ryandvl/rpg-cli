@@ -13,5 +13,5 @@
     "**/*.pytest_cache": true,
 
     "backup": true
-  }
+  },
 }
