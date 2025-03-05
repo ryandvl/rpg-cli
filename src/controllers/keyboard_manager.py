@@ -3,6 +3,8 @@ import curses
 from types import NoneType
 from typing import TYPE_CHECKING, Callable
 
+from src.functions.keyboard import get_named_key
+
 if TYPE_CHECKING:
     from .game_manager import GameManager
     from .window_manager import WindowManager
@@ -38,16 +40,21 @@ class KeyboardManager:
         except:
             key = None
 
-        if key == 27: # Key: ESC
-            window.nodelay(True)
-
-            key_combo = window.getch()
-            if key_combo == -1:
-                self.game_manager.is_running = False
-                
-            window.nodelay(False)
-        elif key == 112: # Key: P
+        if key == get_named_key('esc'):
+            self.check_close_request(window)
+        elif key == get_named_key('single_quotes'):
             self.logger_manager.open_or_close_console()
 
         for func in self.inputs.values():
             func(self.window, self, key)
+
+    def check_close_request(self, window: curses.window) -> None:
+        window.nodelay(True)
+
+        key_combo = window.getch()
+        if key_combo == -1:
+            # Game has closed
+            # TODO Save the important data
+            self.game_manager.is_running = False
+            
+        window.nodelay(False)        
