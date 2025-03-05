@@ -23,12 +23,18 @@ class HudManager:
     hide_layers: dict[str, LayerInterface] = dict()
 
     def setup(self, game_manager: 'GameManager') -> None:
+        '''
+        Initialize all necessary modules to run HudManager
+        '''
         self.game_manager = game_manager
         self.keyboard_manager = game_manager.keyboard_manager
         self.window_manager = game_manager.window_manager
         self.logger_manager = game_manager.logger_manager
 
     def wrapper(self, window: curses.window) -> None:
+        '''
+        Default curses wrapper to run the application, run per tick
+        '''
         window_interface = self.window_manager.register_window('default', window)
 
         self.logger_manager.create_window()
@@ -51,6 +57,9 @@ class HudManager:
             self.game_manager.frames += 1
 
     def create_color_pair(self, foreground: int, background: int) -> int:
+        '''
+        Create and store a new color pair
+        '''
         newID: int = len(self.color_pairs.keys()) + 1
         name = str(foreground) + ' ' + str(background)
 
@@ -60,6 +69,9 @@ class HudManager:
         return self.color_pairs[name]
 
     def get_color_pair(self, foreground: int = 0, background: int = 0) -> int:
+        '''
+        Get a stored color pair
+        '''
         foreground = foreground - 1
         background = background - 1
 
@@ -71,6 +83,9 @@ class HudManager:
         return self.color_pairs[name]
 
     def create_layer(self, layer: LayerInterface) -> None:
+        '''
+        Create and store a new layer
+        '''
         name = layer.name
 
         if self.hide_layers.get(name):
@@ -86,6 +101,9 @@ class HudManager:
         self.layers[name] = layer
 
     def render(self) -> None:
+        '''
+        Render the current window screen
+        '''
         if self.window_manager.current_window != 'logs':
             for layer in self.layers.values():
                 layer.render()
