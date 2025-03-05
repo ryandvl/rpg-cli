@@ -17,7 +17,8 @@ Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and co
 
 ## 📥 Download Game
 
-> **Prerequisites**
+> [!IMPORTANT]
+> **Prerequisite**:
 > Ensure you have [Python](https://www.python.org/) installed on your machine.
 
 1. Clone this repository or Download ZIP and extract:
@@ -36,4 +37,4 @@ Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and co
 
 ## 👨‍💻 Authors
 
-- @ryandvl - *Creator and Maintainer*
+- [ryandvl](https://github.com/ryandvl) - *Creator and Maintainer*
