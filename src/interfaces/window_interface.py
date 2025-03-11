@@ -2,9 +2,10 @@ import curses
 
 from abc import ABC
 
+from src.interfaces.layer_interface import LayerInterface
+
+
 class WindowInterface(ABC):
-    id: int
     name: str
     window: curses.window
-    content: str
-    layers: list
+    layers: list[LayerInterface]

@@ -9,12 +9,21 @@ if TYPE_CHECKING:
 
 type GCP = Callable[[int, int], int]
 
+
 class LayerInterface(ABC):
+    game_manager: "GameManager"
+    hud_manager: "HudManager"
+
     name: str
+    priority: int
     window: curses.window
-    game_manager: 'GameManager'
-    hud_manager: 'HudManager'
     gcp: GCP
+    """
+    Get Color Pairs
+    """
 
     @abstractmethod
-    def render(self) -> None: pass
+    def render(self) -> None:
+        """
+        Render the Layer on Window
+        """
