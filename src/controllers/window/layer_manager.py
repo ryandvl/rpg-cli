@@ -43,6 +43,9 @@ class LayerManager:
 
         layer.gcp = self.hud_manager.get_color_pair
 
+        if not layer.inputs:
+            layer.inputs = dict()
+
         self.layers[name] = layer
 
         return layer

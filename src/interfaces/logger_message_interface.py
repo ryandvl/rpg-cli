@@ -1,6 +1,6 @@
 from abc import ABC
 
-from src.interfaces.logger_message_part import LoggerMessagePartInterface
+from .logger_message_part_interface import LoggerMessagePartInterface
 
 
 class LoggerMessageInterface(ABC):

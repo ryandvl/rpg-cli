@@ -51,8 +51,7 @@ class HudManager:
         while self.game_manager.is_running:
             self.render()
 
-            # self.game_manager.keyboard_manager.update()
-            # self.game_manager.frames += 1
+            self.game_manager.keyboard_manager.update()
 
     def create_color_pair(self, foreground: int, background: int) -> int:
         """

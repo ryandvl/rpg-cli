@@ -1,10 +1,12 @@
-import curses
 import re
 from typing import TYPE_CHECKING
 
-from src.config.colors_config import DARK_GRAY, LOGGER_BACKGROUND
 from src.interfaces.logger_message_interface import LoggerMessageInterface
 from src.interfaces.logger_message_part_interface import LoggerMessagePartInterface
+
+from src.components.windows.logger.logger_window import LoggerWindow
+
+from src.config.colors_config import DARK_GRAY, LOGGER_BACKGROUND
 
 if TYPE_CHECKING:
     from .game_manager import GameManager
@@ -42,8 +44,7 @@ class LoggerManager:
             LOGGER_BACKGROUND[0], LOGGER_BACKGROUND[1]
         )
 
-        self.window = curses.newwin(curses.LINES, curses.COLS, 0, 0)
-        self.window_manager.register_window("logs", self.window)
+        self.window = self.window_manager.create_window(LoggerWindow())
         self.window.bkgd(self.background)
 
     def open_or_close_console(self) -> None:
@@ -69,7 +70,7 @@ class LoggerManager:
         else:
             self.window_manager.change_window(last_window)
 
-    def clear(self) -> None:
+    def clear_logs(self) -> None:
         """
         Clear the logger console
         """
