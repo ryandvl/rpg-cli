@@ -6,7 +6,7 @@ from src.functions.keyboard import get_named_key
 
 if TYPE_CHECKING:
     from .game_manager import GameManager
-    from .window.window_manager import WindowManager
+    from .gfx.window_manager import WindowManager
     from .logger_manager import LoggerManager
 
 type Func = Callable[[curses.window, KeyboardManager, int | None], NoneType]

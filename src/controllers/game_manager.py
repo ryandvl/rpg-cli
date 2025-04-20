@@ -2,8 +2,8 @@ from curses import wrapper
 
 from src.controllers.keyboard_manager import KeyboardManager
 
-from .hud_manager import HudManager
-from .window.window_manager import WindowManager
+from .gfx.hud_manager import HudManager
+from .gfx.window_manager import WindowManager
 from .logger_manager import LoggerManager
 
 
@@ -21,13 +21,13 @@ class GameManager:
     def __init__(self) -> None:
         self.logger_manager = LoggerManager()
         self.hud_manager = HudManager()
-        self.window_manager = WindowManager()
         self.keyboard_manager = KeyboardManager()
+        self.window_manager = WindowManager()
 
         self.logger_manager.setup(self)
         self.hud_manager.setup(self)
-        self.window_manager.setup(self)
         self.keyboard_manager.setup(self)
+        self.window_manager.setup(self)
 
     def run(self) -> None:
         """

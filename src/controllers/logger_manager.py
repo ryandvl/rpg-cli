@@ -10,8 +10,8 @@ from src.config.colors_config import DARK_GRAY, LOGGER_BACKGROUND
 
 if TYPE_CHECKING:
     from .game_manager import GameManager
-    from .window.window_manager import WindowManager
-    from .hud_manager import HudManager
+    from .gfx.window_manager import WindowManager
+    from .gfx.hud_manager import HudManager
 
 
 class LoggerManager:
@@ -55,10 +55,10 @@ class LoggerManager:
         current_window = self.window_manager.current_window
         last_window = self.window_manager.last_window
 
-        if current_window != "logs":
+        if current_window != "logger":
             self.info("$28,17$Opening logger...")
 
-            self.window_manager.change_window("logs")
+            self.window_manager.change_window("logger")
 
             self.success("Logger opened!")
 

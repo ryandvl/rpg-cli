@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING
 from src.functions.cursor import hide_cursor
 
 if TYPE_CHECKING:
-    from .game_manager import GameManager
-    from .logger_manager import LoggerManager
-    from .window.window_manager import WindowManager
+    from ..game_manager import GameManager
+    from ..logger_manager import LoggerManager
+    from .window_manager import WindowManager
 
 
 class HudManager:

@@ -1,0 +1,10 @@
+{
+  "search.exclude": {
+    "backup": true,
+    "run": true
+  },
+  "files.exclude": {
+    "backup": true,
+    "run": true
+  }
+}

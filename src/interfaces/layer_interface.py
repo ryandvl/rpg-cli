@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Callable
 
 if TYPE_CHECKING:
     from src.controllers.game_manager import GameManager
-    from src.controllers.hud_manager import HudManager
+    from src.controllers.gfx.hud_manager import HudManager
     from src.controllers.keyboard_manager import Func
 
 type GCP = Callable[[int, int], int]

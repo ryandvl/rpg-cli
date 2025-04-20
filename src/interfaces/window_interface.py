@@ -11,9 +11,9 @@ if TYPE_CHECKING:
 class WindowInterface(ABC):
     name: str
     window: curses.window
-    layers: list[LayerInterface]
+    layers: list[LayerInterface] = list()
     lines: int
     columns: int
     x: int
     y: int
-    window_inputs: dict[str, "Func"]
+    window_inputs: dict[str, "Func"] = dict()

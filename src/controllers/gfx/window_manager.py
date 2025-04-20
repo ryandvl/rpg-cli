@@ -1,7 +1,7 @@
 import curses
 from typing import TYPE_CHECKING
 
-from src.controllers.window.layer_manager import LayerManager
+from src.controllers.gfx.layer_manager import LayerManager
 from src.interfaces.window_interface import WindowInterface
 
 from src.errors.window_error import WindowError
@@ -9,7 +9,6 @@ from src.errors.window_error import WindowError
 if TYPE_CHECKING:
     from ..game_manager import GameManager
     from ..keyboard_manager import KeyboardManager
-
 
 class WindowManager:
     """
@@ -24,8 +23,9 @@ class WindowManager:
 
     current_window: str
     window_interface: WindowInterface
+    last_window: str
 
-    layer: "LayerManager"
+    layer: "LayerManager" = None
 
     def setup(self, game_manager: "GameManager") -> None:
         """
@@ -33,6 +33,7 @@ class WindowManager:
         """
 
         self.game_manager = game_manager
+        self.keyboard_manager = game_manager.keyboard_manager
 
     def get_window(self, name: str) -> WindowInterface | None:
         """
@@ -80,6 +81,7 @@ class WindowManager:
             self.window = window
             self.current_window = name
             self.window_interface = window_interface
+            self.last_window = name
 
         return window_interface
 
@@ -121,9 +123,7 @@ class WindowManager:
         if self.layer:
             del self.layer
 
-        layer_manager = LayerManager(self.game_manager)
-
-        self.layer = layer_manager
+        self.layer = LayerManager(self.game_manager)
 
     def load_keyboard(self) -> None:
         """

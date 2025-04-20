@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..game_manager import GameManager
-    from ..hud_manager import HudManager
+    from .hud_manager import HudManager
     from .window_manager import WindowManager
 
 
