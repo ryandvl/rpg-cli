@@ -11,10 +11,11 @@ Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and co
 ---
 
 ## 📑 Table of Contents
-1. [About](#-about)
-3. [Download](#-download)
-5. [License](#-license)
-6. [Author](#-author)
+
+- [About](#-about)
+- [Download](#-download)
+- [Author](#-author)
+- [License](#-license)
 
 ---
 
@@ -46,12 +47,14 @@ Experience an RPG Game where you'll face mobs, unlock and upgrade skills, and co
 
 ---
 
-## 📝 License
+## 👨‍💻 Author
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+| [![ryandvl's avatar](https://github.com/ryandvl.png?size=128)](https://github.com/ryandvl) |
+| :---: |
+| **[ryandvl](https://github.com/ryandvl)** |
 
 ---
 
-## 👨‍💻 Author
+## 📝 License
 
-- [ryandvl](https://github.com/ryandvl) - *Creator and Maintainer*
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
