@@ -16,6 +16,9 @@ class LayerInterface(ABC):
 
     name: str
     priority: int
+    """
+    Same than z-index, the smaller the number, the further ahead it is
+    """
     window: curses.window
     gcp: GCP
     """

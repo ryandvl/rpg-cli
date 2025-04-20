@@ -19,12 +19,19 @@ class LayerManager:
     window_manager: "WindowManager"
 
     layers: dict[str, LayerInterface] = dict()
-    hide_layers: dict[str, LayerInterface] = dict()
+    hidden_layers: dict[str, LayerInterface] = dict()
 
     def __init__(self, game_manager: "GameManager") -> None:
         self.game_manager = game_manager
         self.hud_manager = game_manager.hud_manager
         self.window_manager = game_manager.window_manager
+
+    def get_layer(self, layer_name: str) -> LayerInterface:
+        """
+        Returns a Window Layer
+        """
+
+        return self.layers[layer_name] or self.hidden_layers[layer_name]
 
     def create_layer(self, layer: LayerInterface) -> LayerInterface | None:
         """
@@ -33,7 +40,7 @@ class LayerManager:
 
         name = layer.name
 
-        if self.hide_layers.get(name):
+        if self.hidden_layers.get(name):
             return
 
         layer.window = self.window_manager.window
@@ -58,11 +65,11 @@ class LayerManager:
         if self.layers.get(layer_name):
             return False
 
-        if not self.hide_layers.get(layer_name):
+        if not self.hidden_layers.get(layer_name):
             return False
 
-        self.layers[layer_name] = self.hide_layers[layer_name]
-        del self.hide_layers[layer_name]
+        self.layers[layer_name] = self.hidden_layers[layer_name]
+        del self.hidden_layers[layer_name]
 
         return True
 
@@ -71,13 +78,13 @@ class LayerManager:
         Hide a Window Layer
         """
 
-        if self.hide_layers.get(layer_name):
+        if self.hidden_layers.get(layer_name):
             return False
 
         if not self.layers.get(layer_name):
             return False
 
-        self.hide_layers[layer_name] = self.layers[layer_name]
+        self.hidden_layers[layer_name] = self.layers[layer_name]
         del self.layers[layer_name]
 
         return True
@@ -89,12 +96,5 @@ class LayerManager:
 
         if self.layers.get(layer_name):
             del self.layers[layer_name]
-        elif self.hide_layers.get(layer_name):
-            del self.hide_layers[layer_name]
-
-    def get_layer(self, layer_name: str) -> LayerInterface:
-        """
-        Returns a Window Layer
-        """
-
-        return self.layers[layer_name] or self.hide_layers[layer_name]
+        elif self.hidden_layers.get(layer_name):
+            del self.hidden_layers[layer_name]

@@ -1,8 +1,8 @@
 from src.interfaces.layer_interface import LayerInterface
 
 
-class Logger_LogsLayer(LayerInterface):
-    name = "logs"
+class GameMenu_MenuLayer(LayerInterface):
+    name = "menu"
     priority = 1
 
     def render(self) -> None:

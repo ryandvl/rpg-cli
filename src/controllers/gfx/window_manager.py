@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from ..game_manager import GameManager
     from ..keyboard_manager import KeyboardManager
 
+
 class WindowManager:
     """
     Manage all windows of the game and its layers
