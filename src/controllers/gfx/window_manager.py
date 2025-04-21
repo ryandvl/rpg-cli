@@ -1,10 +1,11 @@
 import curses
 from typing import TYPE_CHECKING
 
+from src.controllers.gfx.dialog_manager import DialogManager
 from src.controllers.gfx.layer_manager import LayerManager
-from src.interfaces.window_interface import WindowInterface
-
+from src.errors.dialog_error import DialogError
 from src.errors.window_error import WindowError
+from src.interfaces.window_interface import WindowInterface
 
 if TYPE_CHECKING:
     from ..game_manager import GameManager
@@ -27,6 +28,7 @@ class WindowManager:
     last_window: str
 
     layer: "LayerManager" = None
+    dialog: "DialogManager" = None
 
     def setup(self, game_manager: "GameManager") -> None:
         """
@@ -124,7 +126,11 @@ class WindowManager:
         if self.layer:
             del self.layer
 
+        if self.dialog:
+            del self.dialog
+
         self.layer = LayerManager(self.game_manager)
+        self.dialog = DialogManager(self.game_manager)
 
     def load_keyboard(self) -> None:
         """
@@ -134,6 +140,9 @@ class WindowManager:
         if not self.layer:
             raise WindowError("Initialize layer first to initialize keyboard")
 
+        if not self.dialog:
+            raise DialogError("Initialize dialog first to initialize keyboard")
+
         self.keyboard_manager.clear_window()
 
         self.keyboard_manager.window_inputs = self.window_interface.window_inputs
@@ -141,3 +150,9 @@ class WindowManager:
 
         for layer in self.layer.layers.values():
             self.keyboard_manager.layer_inputs[layer.name] = layer.inputs
+
+        for dialog in self.dialog.dialogs.values():
+            # self.keyboard_manager.window_inputs[dialog]
+
+            for layer in dialog.layers:
+                self.keyboard_manager.layer_inputs[layer.name] = layer.inputs

@@ -1,8 +1,8 @@
-from src.components.windows.logger.layers.logs_layer import Logger_LogsLayer
-
 from src.interfaces.dialog_interface import DialogInterface
+
+from .layers.menu_layer import GameMenu_MenuLayer
 
 
 class GameMenuDialog(DialogInterface):
     name = "game_menu"
-    layers = list([])
+    layers = list([GameMenu_MenuLayer])

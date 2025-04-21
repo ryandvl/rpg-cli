@@ -41,13 +41,13 @@ class KeyboardManager:
 
         try:
             key = window.getch()
-        except:  # noqa (Ruff Warning)
+        except:  # noqa: E722
             key = None
 
-        if key == get_named_key("esc"):
-            self.check_close_request(window)
-        elif key == get_named_key("single_quotes"):
-            self.logger_manager.open_or_close_console()
+        # if key == get_named_key("esc"):
+        #     self.check_close_request(window)
+        # elif key == get_named_key("single_quotes"):
+        #     self.logger_manager.open_or_close_console()
 
         for func in self.get_inputs().values():
             func(window, self, key)

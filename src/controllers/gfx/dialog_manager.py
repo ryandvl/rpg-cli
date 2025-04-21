@@ -30,7 +30,7 @@ class DialogManager:
 
         return self.dialogs[dialog_name] or self.hidden_dialogs[dialog_name]
 
-    def unhide_dialog(self, dialog_name: str) -> bool:
+    def show_dialog(self, dialog_name: str) -> bool:
         """
         Unhide a Dialog
         """
