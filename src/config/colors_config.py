@@ -1,3 +1,0 @@
-LOGGER_BACKGROUND = [16, 17]
-
-DARK_GRAY = "$9,17$"

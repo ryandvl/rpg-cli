@@ -1,33 +1,25 @@
-import curses
-from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Callable
+from typing import Callable
+
+from src.globals import ABC, TYPE_CHECKING, abstractmethod, curses
 
 if TYPE_CHECKING:
-    from src.controllers.game_manager import GameManager
-    from src.controllers.gfx.hud_manager import HudManager
-    from src.controllers.keyboard_manager import Func
+    from ..managers.game_manager import GameManager
+    from ..managers.gfx.render_manager import RenderManager
+    from ..managers.keyboard_manager import KeyboardFunction
 
-type GCP = Callable[[int, int], int]
+type GetColorPairs = Callable[[int, int], int]
 
 
 class LayerInterface(ABC):
-    game_manager: "GameManager"
-    hud_manager: "HudManager"
+    game: "GameManager"
+    render: "RenderManager"
 
     name: str
     priority: int
-    """
-    Same than z-index, the smaller the number, the further ahead it is
-    """
     window: curses.window
-    gcp: GCP
-    """
-    Get Color Pairs
-    """
-    inputs: dict[str, "Func"]
+    gcp: "GetColorPairs"
+    inputs: dict[str, "KeyboardFunction"]
 
     @abstractmethod
-    def render(self) -> None:
-        """
-        Render the Layer on Window
-        """
+    def draw(self) -> None:
+        pass

@@ -1,19 +1,18 @@
-import curses
-from abc import ABC
-from typing import TYPE_CHECKING
+from src.globals import ABC, TYPE_CHECKING, curses
 
-from src.interfaces.layer_interface import LayerInterface
+from .layer_interface import LayerInterface
 
 if TYPE_CHECKING:
-    from src.controllers.keyboard_manager import Func
+    from ..managers.keyboard_manager import KeyboardFunction
 
 
 class WindowInterface(ABC):
     name: str
-    window: curses.window
+    win: curses.window
+    default: bool = False
     layers: list[LayerInterface] = list()
     lines: int
     columns: int
     x: int
     y: int
-    window_inputs: dict[str, "Func"] = dict()
+    inputs: dict[str, "KeyboardFunction"] = dict()

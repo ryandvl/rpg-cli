@@ -1,4 +1,4 @@
-from src.controllers.game_manager import GameManager
+from src.managers.game_manager import GameManager
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     GameManager().run()

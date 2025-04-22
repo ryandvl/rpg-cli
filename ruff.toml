@@ -1,0 +1,1 @@
+lint.per-file-ignores = { "src/globals.py" = ["F401", "F403"] }

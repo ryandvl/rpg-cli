@@ -1,9 +1,0 @@
-from src.interfaces.layer_interface import LayerInterface
-
-
-class Logger_LogsLayer(LayerInterface):
-    name = "logs"
-    priority = 1
-
-    def render(self) -> None:
-        pass
