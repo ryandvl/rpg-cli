@@ -27,7 +27,7 @@ class WindowController:
         self.name = interface.name
         self.win = interface.win
 
-    def load_layers(self) -> None:
+    def load_layer(self) -> None:
         if self.layer:
             del self.layer
 

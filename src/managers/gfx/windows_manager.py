@@ -21,8 +21,9 @@ class WindowsManager:
         self.game = game
         self.keyboard = game.keyboard
 
-    def load(self, window: curses.window) -> WindowInterface:
-        return self.__register("default", window, True)
+    def load_default(self, window: curses.window) -> None:
+        window_interface = self.__register("default", window, True)
+        window_interface.win.bkgd(0, 1)
 
     def get(self, name: str) -> WindowInterface | None:
         return self.windows.get(name)
@@ -57,7 +58,7 @@ class WindowsManager:
 
         self.window.win.clear()
 
-        self.window.load_layers()
+        self.window.load_layer()
         self.window.load_keyboard()
 
         self.window.win.refresh()

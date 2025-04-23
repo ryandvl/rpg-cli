@@ -22,8 +22,7 @@ class RenderManager:
         curses.start_color()
         curses.use_default_colors()
 
-        window_interface = self.windows.load(window)
-        window_interface.win.bkgd(0, 1)
+        self.windows.load_default(window)
 
         hide_cursor()
 

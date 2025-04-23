@@ -1,4 +1,5 @@
 import curses
+import re
 
 # Import Types
 from abc import ABC, abstractmethod
