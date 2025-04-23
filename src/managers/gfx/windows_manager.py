@@ -51,6 +51,8 @@ class WindowsManager:
             return False
 
         self.last_window = self.window.name
+
+        del self.window
         self.window = WindowController(self.game, window_interface)
 
         self.window.win.clear()

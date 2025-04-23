@@ -31,12 +31,13 @@ class RenderManager:
         while self.game.is_running:
             self.update()
 
-            self.keyboard.update()
-
     def update(self) -> None:
-        # TODO: render all layers
+        if layer := self.windows.window.layer:
+            layer.render()
 
         self.windows.window.win.refresh()
+
+        self.keyboard.update()
 
     def create_color_pair(self, foreground: int, background: int) -> int:
         newID: int = len(self.color_pairs.keys()) + 1
