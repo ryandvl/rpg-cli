@@ -1,6 +1,7 @@
 from src.globals import TYPE_CHECKING, curses, hide_cursor
 
 if TYPE_CHECKING:
+    from ..console_manager import ConsoleManager
     from ..game_manager import GameManager
     from ..keyboard_manager import KeyboardManager
     from .windows_manager import WindowsManager
@@ -8,6 +9,7 @@ if TYPE_CHECKING:
 
 class RenderManager:
     game: "GameManager"
+    console: "ConsoleManager"
     windows: "WindowsManager"
     keyboard: "KeyboardManager"
 
@@ -15,6 +17,7 @@ class RenderManager:
 
     def setup(self, game: "GameManager") -> None:
         self.game = game
+        self.console = game.console
         self.keyboard = game.keyboard
         self.windows = game.windows
 
@@ -25,6 +28,9 @@ class RenderManager:
         self.windows.load_default(window)
 
         hide_cursor()
+
+        self.console.load()
+        self.console.success("Game started!")
 
         self.update()
         while self.game.is_running:
