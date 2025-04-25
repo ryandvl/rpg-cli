@@ -1,6 +1,7 @@
 from curses import wrapper
 
 from .console_manager import ConsoleManager
+from .gfx.dialogs_manager import DialogsManager
 from .gfx.render_manager import RenderManager
 from .gfx.windows_manager import WindowsManager
 from .keyboard_manager import KeyboardManager
@@ -9,8 +10,9 @@ from .keyboard_manager import KeyboardManager
 class GameManager:
     console: "ConsoleManager"
     render: "RenderManager"
-    keyboard: "KeyboardManager"
     windows: "WindowsManager"
+    dialogs: "DialogsManager"
+    keyboard: "KeyboardManager"
 
     is_running: bool = False
 
@@ -18,11 +20,13 @@ class GameManager:
         self.console = ConsoleManager()
         self.render = RenderManager()
         self.windows = WindowsManager()
+        self.dialogs = DialogsManager()
         self.keyboard = KeyboardManager()
 
         self.console.setup(self)
         self.render.setup(self)
         self.windows.setup(self)
+        self.dialogs.setup(self)
         self.keyboard.setup(self)
 
     def run(self) -> None:

@@ -1,9 +1,9 @@
+from src.controllers.window_controller import WindowController
 from src.errors.dialog_error import DialogError
 from src.globals import TYPE_CHECKING, create_win, curses
 from src.interfaces.window_interface import WindowInterface
 
 if TYPE_CHECKING:
-    from ...controllers.window_controller import WindowController
     from ..game_manager import GameManager
     from .windows_manager import WindowsManager
 
@@ -16,12 +16,15 @@ class DialogsManager:
     dialogs: dict[str, WindowController] = dict()
     hidden_dialogs: dict[str, WindowController] = dict()
 
-    def __init__(self, game: "GameManager", windows: "WindowsManager") -> None:
+    def setup(self, game: "GameManager") -> None:
         self.game = game
-        self.windows = windows
+        self.windows = game.windows
 
     def get(self, name: str) -> WindowController | None:
         return self.dialogs.get(name)
+
+    def get_focused(self) -> WindowController | None:
+        return self.dialogs.get(self.focused) if self.focused else None
 
     def create(self, interface: WindowInterface) -> curses.window:
         name = interface.name

@@ -7,12 +7,14 @@ type KeyboardFunction = Callable[[curses.window, KeyboardManager, int | None], N
 
 if TYPE_CHECKING:
     from .game_manager import GameManager
+    from .gfx.dialogs_manager import DialogsManager
     from .gfx.windows_manager import WindowsManager
 
 
 class KeyboardManager:
     game: "GameManager"
     windows: "WindowsManager"
+    dialogs: "DialogsManager"
 
     layer_inputs: dict[str, dict[str, KeyboardFunction]] = dict()
     window_inputs: dict[str, KeyboardFunction] = dict()
@@ -21,6 +23,7 @@ class KeyboardManager:
     def setup(self, game: "GameManager") -> None:
         self.game = game
         self.windows = game.windows
+        self.dialogs = game.dialogs
 
         curses.set_escdelay(25)  # Default: 1000ms
 
@@ -32,11 +35,13 @@ class KeyboardManager:
         except:  # noqa: E722
             key = None
 
-        # TODO: This is just for tests, remove later
-        if key == get_named_key("esc"):
+        # For emergencies situations
+        if key == curses.KEY_F4:
+            return self.game.stop()
+
+        if not self.dialogs.focused and key == get_named_key("esc"):
             if self.check_esc(window):
-                self.game.stop()
-                return
+                self.dialogs.show("menu")
 
         for func in self.get_inputs().values():
             func(window, self, key)
