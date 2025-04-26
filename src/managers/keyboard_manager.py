@@ -28,29 +28,42 @@ class KeyboardManager:
         curses.set_escdelay(25)  # Default: 1000ms
 
     def update(self) -> None:
-        window = self.windows.window.win
+        screen = self.windows.screen
 
         try:
-            key = window.getch()
+            key = screen.getch()
         except:  # noqa: E722
             key = None
 
-        # For emergencies situations
+        # TODO: TEMPORARY
+        if key == get_named_key("single_quotes"):
+            self.game.console.open_or_close()
+            return
+
         if key == curses.KEY_F4:
+            # For emergencies situations
             return self.game.stop()
-
-        if not self.dialogs.focused and key == get_named_key("esc"):
-            if self.check_esc(window):
+        elif not self.dialogs.focused and key == get_named_key("esc"):
+            if self.check_esc(screen):
                 self.dialogs.show("menu")
+                return
 
-        for func in self.get_inputs().values():
-            func(window, self, key)
+        for func in self.get_inputs():
+            func(screen, self, key)
 
     def get_input(self, input_name: str) -> KeyboardFunction | None:
         return self.global_inputs.get(input_name) or self.window_inputs.get(input_name)
 
-    def get_inputs(self) -> dict:
-        return self.layer_inputs | self.window_inputs | self.global_inputs
+    def get_inputs(self) -> list:
+        result = []
+
+        result.extend(self.window_inputs.values())
+        result.extend(self.global_inputs.values())
+
+        for value in self.layer_inputs.values():
+            result.extend(value.values())
+
+        return result
 
     def check_esc(self, window: curses.window) -> bool:
         window.nodelay(True)

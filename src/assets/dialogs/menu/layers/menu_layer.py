@@ -6,4 +6,5 @@ class MenuLayer(LayerInterface):
     priority = 1
 
     def draw(self) -> None:
+        self.window.addch("a")
         pass

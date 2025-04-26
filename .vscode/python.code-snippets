@@ -1,0 +1,15 @@
+{
+  "Window Class": {
+    "prefix": "class Window",
+    "body": [
+      "from src.interfaces.window_interface import WindowInterface",
+      "",
+      "",
+      "class $1Window(WindowInterface):",
+      "    name = \"$2\"",
+      "    layers = list([])",
+			""
+    ],
+    "description": "Cria uma classe WelcomeWindow que herda de WindowInterface"
+  }
+}

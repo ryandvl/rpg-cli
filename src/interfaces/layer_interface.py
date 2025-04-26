@@ -18,7 +18,7 @@ class LayerInterface(ABC):
     priority: int
     window: curses.window
     gcp: "GetColorPairs"
-    inputs: dict[str, "KeyboardFunction"]
+    inputs: dict[str, "KeyboardFunction"] = dict()
 
     @abstractmethod
     def draw(self) -> None:

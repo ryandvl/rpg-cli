@@ -1,3 +1,4 @@
+import sys
 from curses import wrapper
 
 from .console_manager import ConsoleManager
@@ -15,6 +16,7 @@ class GameManager:
     keyboard: "KeyboardManager"
 
     is_running: bool = False
+    loaded: bool = False
 
     def __init__(self) -> None:
         self.console = ConsoleManager()
@@ -29,10 +31,24 @@ class GameManager:
         self.dialogs.setup(self)
         self.keyboard.setup(self)
 
+        self.loaded = True
+
     def run(self) -> None:
         self.is_running = True
 
-        wrapper(self.render.wrapper)
+        reason = None
+        if len(sys.argv) > 1 and sys.argv[1] == "--debug":
+            wrapper(self.render.wrapper)
+        else:
+            try:
+                wrapper(self.render.wrapper)
+            except Exception as e:
+                reason = str(e)
+            finally:
+                if reason:
+                    print(f"Game closed, reason:\n{reason}")
+                else:
+                    print("Game closed")
 
     def stop(self) -> None:
         self.is_running = False

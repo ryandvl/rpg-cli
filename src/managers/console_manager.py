@@ -1,4 +1,4 @@
-from src.config import CONSOLE_BACKGROUND, CONSOLE_WINDOW_NAME, DARK_GRAY
+from config import CONSOLE_BACKGROUND, CONSOLE_WINDOW_NAME, DARK_GRAY
 from src.globals import TYPE_CHECKING, curses, re
 from src.interfaces.log_message_interface import (
     LogMessageInterface,
@@ -47,12 +47,6 @@ class ConsoleManager:
         self.windows.change(CONSOLE_WINDOW_NAME)
 
         self.success("Console opened!")
-
-        for log in self.logs:
-            for message_part in log.message_parts:
-                self.window.addstr(message_part.message, message_part.color)
-
-            self.window.addch("\n")
 
         self.is_open = True
 

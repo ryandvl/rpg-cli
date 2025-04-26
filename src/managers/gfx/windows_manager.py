@@ -1,3 +1,4 @@
+from src.assets.imports import WelcomeWindow
 from src.globals import TYPE_CHECKING, create_win, curses
 
 from ...controllers.window_controller import WindowController
@@ -16,22 +17,29 @@ class WindowsManager:
     last_window: str
     window: "WindowController"
     windows: dict[str, "WindowInterface"] = dict()
+    screen: curses.window
 
     def setup(self, game: "GameManager") -> None:
         self.game = game
         self.keyboard = game.keyboard
 
-    def load_default(self, window: curses.window) -> None:
-        window_interface = self.__register("default", window, True)
-        window_interface.win.bkgd(0, 1)
+    def load_default(self, stdscr: curses.window) -> None:
+        self.screen = stdscr
+
+        self.create(WelcomeWindow())
 
     def get(self, name: str) -> WindowInterface | None:
         return self.windows.get(name)
 
-    def create(self, interface: WindowInterface) -> curses.window:
-        name = interface.name
+    def render(self) -> None:
+        self.window.win.clear()
 
-        if not name:
+        self.window.render()
+
+        self.window.win.refresh()
+
+    def create(self, interface: WindowInterface) -> curses.window:
+        if not interface.name:
             raise WindowError("Name not found")
 
         lines = getattr(interface, "lines", curses.LINES)
@@ -41,7 +49,7 @@ class WindowsManager:
 
         window = create_win(lines, columns, begin_x, begin_y)
 
-        self.__register(name, window)
+        self.__register(window, interface)
 
         return window
 
@@ -66,20 +74,17 @@ class WindowsManager:
         return True
 
     def __register(
-        self, name: str, window: curses.window, default: bool = False
+        self, window: curses.window, interface: WindowInterface
     ) -> WindowInterface:
-        window_interface = WindowInterface()
-        window_interface.name = name
-        window_interface.win = window
-        window_interface.default = default
+        interface.win = window
 
-        self.windows[name] = window_interface
+        self.windows[interface.name] = interface
 
-        if window_interface.default:
-            self.window = WindowController(self.game, window_interface)
-            self.last_window = name
+        if interface.default:
+            self.window = WindowController(self.game, interface)
+            self.last_window = interface.name
 
-        return window_interface
+        return interface
 
     def __unregister(self, name: str) -> None:
         del self.windows[name]

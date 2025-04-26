@@ -27,11 +27,16 @@ class WindowController:
         self.name = interface.name
         self.win = interface.win
 
+    def render(self) -> None:
+        if layer := self.layer:
+            layer.render()
+
     def load_layer(self) -> None:
         if self.layer:
             del self.layer
 
         self.layer = LayerController(self.game, self)
+        self.layer.load(self.interface)
 
     def load_keyboard(self) -> None:
         if not self.layer:

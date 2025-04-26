@@ -1,6 +1,7 @@
 from src.globals import TYPE_CHECKING
 
 from ..interfaces.layer_interface import LayerInterface
+from ..interfaces.window_interface import WindowInterface
 
 if TYPE_CHECKING:
     from ..managers.game_manager import GameManager
@@ -18,6 +19,10 @@ class LayerController:
     def __init__(self, game: "GameManager", window: "WindowController") -> None:
         self.game = game
         self.window = window
+
+    def load(self, interface: WindowInterface) -> None:
+        for layer in interface.layers:
+            self.create(layer)
 
     def get(self, name: str) -> LayerInterface:
         return self.layers[name] or self.hidden_layers[name]
@@ -38,9 +43,6 @@ class LayerController:
         interface.render = self.game.render
 
         interface.gcp = interface.render.get_color_pair
-
-        if not interface.inputs:
-            interface.inputs = dict()
 
         self.layers[name] = interface
         self.__sort()

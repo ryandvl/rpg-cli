@@ -1,9 +1,12 @@
-from src.globals import TYPE_CHECKING, curses, hide_cursor
+from signal import SIGWINCH, signal
+
+from src.globals import TYPE_CHECKING, curses, hide_cursor, sleep
 
 if TYPE_CHECKING:
     from ..console_manager import ConsoleManager
     from ..game_manager import GameManager
     from ..keyboard_manager import KeyboardManager
+    from .dialogs_manager import DialogsManager
     from .windows_manager import WindowsManager
 
 
@@ -12,6 +15,7 @@ class RenderManager:
     console: "ConsoleManager"
     windows: "WindowsManager"
     keyboard: "KeyboardManager"
+    dialogs: "DialogsManager"
 
     color_pairs: dict[str, int] = dict()
 
@@ -20,27 +24,35 @@ class RenderManager:
         self.console = game.console
         self.keyboard = game.keyboard
         self.windows = game.windows
+        self.dialogs = game.dialogs
 
-    def wrapper(self, window: curses.window) -> None:
+    def wrapper(self, stdscr: curses.window) -> None:
+        global _stdscr
+        _stdscr = stdscr
+
         curses.start_color()
         curses.use_default_colors()
 
-        self.windows.load_default(window)
-
-        hide_cursor()
+        self.windows.load_default(stdscr)
 
         self.console.load()
         self.console.success("Game started!")
 
-        self.update()
+        hide_cursor()
+        signal(SIGWINCH, self.handle_resize)
+
         while self.game.is_running:
             self.update()
 
-    def update(self) -> None:
-        if layer := self.windows.window.layer:
-            layer.render()
+    @staticmethod
+    def handle_resize(signum, frame) -> None:
+        stdscr = _stdscr
+        curses.endwin()
+        stdscr.refresh()
 
-        self.windows.window.win.refresh()
+    def update(self) -> None:
+        self.windows.render()
+        self.dialogs.render()
 
         self.keyboard.update()
 

@@ -1,6 +1,6 @@
 from src.controllers.window_controller import WindowController
 from src.errors.dialog_error import DialogError
-from src.globals import TYPE_CHECKING, create_win, curses
+from src.globals import TYPE_CHECKING, curses
 from src.interfaces.window_interface import WindowInterface
 
 if TYPE_CHECKING:
@@ -26,6 +26,10 @@ class DialogsManager:
     def get_focused(self) -> WindowController | None:
         return self.dialogs.get(self.focused) if self.focused else None
 
+    def render(self) -> None:
+        for dialog in self.dialogs.values():
+            dialog.render()
+
     def create(self, interface: WindowInterface) -> curses.window:
         name = interface.name
 
@@ -37,7 +41,8 @@ class DialogsManager:
         begin_x = getattr(interface, "x", 0)
         begin_y = getattr(interface, "y", 0)
 
-        window = create_win(lines, columns, begin_x, begin_y)
+        current_win = self.windows.window.win
+        window = current_win.subwin(lines, columns, begin_x, begin_y)
 
         self.__register(name, window)
 
