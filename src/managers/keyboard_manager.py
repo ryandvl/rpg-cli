@@ -1,13 +1,15 @@
 from types import NoneType
-from typing import Callable
+from typing import Any, Callable
 
 from src.globals import TYPE_CHECKING, curses, get_named_key
 
 type KeyboardFunction = Callable[[curses.window, KeyboardManager, int | None], NoneType]
 
 if TYPE_CHECKING:
+    from .console_manager import ConsoleManager
     from .game_manager import GameManager
     from .gfx.dialogs_manager import DialogsManager
+    from .gfx.render_manager import RenderManager
     from .gfx.windows_manager import WindowsManager
 
 
@@ -15,6 +17,8 @@ class KeyboardManager:
     game: "GameManager"
     windows: "WindowsManager"
     dialogs: "DialogsManager"
+    render: "RenderManager"
+    console: "ConsoleManager"
 
     layer_inputs: dict[str, dict[str, KeyboardFunction]] = dict()
     window_inputs: dict[str, KeyboardFunction] = dict()
@@ -24,12 +28,17 @@ class KeyboardManager:
         self.game = game
         self.windows = game.windows
         self.dialogs = game.dialogs
+        self.render = game.render
+        self.console = game.console
 
         curses.set_escdelay(25)  # Default: 1000ms
 
-    def update(self) -> None:
+    def update(self, forced: bool = False) -> Any:
         screen = self.windows.screen
         window = self.windows.window.win
+
+        def should_render() -> None:
+            self.render.should_render = True
 
         try:
             key = screen.getch()
@@ -38,19 +47,23 @@ class KeyboardManager:
 
         # TODO: TEMPORARY
         if key == get_named_key("single_quotes"):
-            self.game.console.open_or_close()
-            return
+            should_render()
+            return self.console.open_or_close()
 
         if key == curses.KEY_F4:
             # For emergencies situations
             return self.game.stop()
         elif not self.dialogs.focused and key == get_named_key("esc"):
             if self.check_esc(window):
-                self.dialogs.show("menu")
-                return
+                should_render()
+                return self.dialogs.show("menu")
 
         for func in self.get_inputs():
+            should_render()
             func(screen, self, key)
+
+        if forced:
+            should_render()
 
     def get_input(self, input_name: str) -> KeyboardFunction | None:
         return self.global_inputs.get(input_name) or self.window_inputs.get(input_name)

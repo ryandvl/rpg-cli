@@ -20,6 +20,9 @@ class RenderManager:
     color_pairs: dict[str, int] = dict()
     stdscr: curses.window
 
+    should_render: bool = True
+    should_clear: bool = False
+
     def setup(self, game: "GameManager") -> None:
         self.game = game
         self.console = game.console
@@ -47,7 +50,6 @@ class RenderManager:
 
         while self.game.is_running:
             self.update()
-            self.console.info("render")
 
     @staticmethod
     def handle_resize(signum, frame) -> None:
@@ -56,14 +58,26 @@ class RenderManager:
         curses.endwin()
         stdscr.refresh()
 
-        rows, cols = stdscr.getmaxyx()
-        console.info(f"Screen resized to: {rows}x{cols}")
+        cols, rows = stdscr.getmaxyx()
+        console.warn(f"Screen resized to: {rows}, {cols} (Forced Render)")
+        curses.COLS = rows
+        curses.LINES = cols
 
-    def update(self) -> None:
-        self.windows.render()
-        self.dialogs.render()
+        render.update(True)
 
-        self.keyboard.update()
+    def update(self, forced: bool = False) -> None:
+        if render.should_clear:
+            render.should_clear = False
+
+        if forced or self.should_render:
+            render.should_clear = forced
+
+            self.windows.render(render.should_clear)
+            self.dialogs.render(render.should_clear)
+
+            self.should_render = False
+
+        self.keyboard.update(forced)
 
     def create_color_pair(self, foreground: int, background: int) -> int:
         newID: int = len(self.color_pairs.keys()) + 1

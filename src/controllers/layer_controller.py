@@ -1,4 +1,5 @@
 from src.globals import TYPE_CHECKING
+from src.utils.window import WindowUtil
 
 from ..interfaces.layer_interface import LayerInterface
 from ..interfaces.window_interface import WindowInterface
@@ -41,8 +42,10 @@ class LayerController:
 
         interface.game = self.game
         interface.render = self.game.render
+        interface.console = self.game.console
 
         interface.gcp = interface.render.get_color_pair
+        interface.util = WindowUtil(interface.window)
 
         self.layers[name] = interface
         self.__sort()

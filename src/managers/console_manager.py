@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from config import CONSOLE_BACKGROUND, CONSOLE_WINDOW_NAME, DARK_GRAY
 from src.globals import TYPE_CHECKING, curses, re
 from src.interfaces.log_message_interface import (
@@ -36,7 +38,6 @@ class ConsoleManager:
         )
 
         self.window = self.windows.create(ConsoleWindow())
-        self.window.bkgd(self.background)
 
     def open(self) -> bool:
         if self.is_open:
@@ -96,14 +97,21 @@ class ConsoleManager:
 
         return log_message
 
+    @staticmethod
+    def format_time() -> str:
+        time = datetime.now().strftime("%H:%M:%S")
+        time_message = f"{DARK_GRAY}{time} "
+
+        return time_message
+
     def print(self, message: str) -> None:
-        formatted_message = self.format_message(message)
+        formatted_message = self.format_message(self.format_time() + message)
         self.logs.append(formatted_message)
 
     def info(self, message: str) -> None:
         message = f"{DARK_GRAY}[$15,17$INFO{DARK_GRAY}] $16,17${message}"
 
-        formatted_message = self.format_message(message)
+        formatted_message = self.format_message(self.format_time() + message)
         self.logs.append(formatted_message)
 
     def warn(self, message: str) -> None:

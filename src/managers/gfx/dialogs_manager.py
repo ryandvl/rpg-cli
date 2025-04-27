@@ -30,9 +30,9 @@ class DialogsManager:
     def get_focused(self) -> WindowController | None:
         return self.dialogs.get(self.focused) if self.focused else None
 
-    def render(self) -> None:
+    def render(self, should_clear: bool = False) -> None:
         for dialog in self.dialogs.values():
-            dialog.render()
+            dialog.render(should_clear)
 
     def create(self, interface: DialogInterface) -> curses.window:
         name = interface.name
