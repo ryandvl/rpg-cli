@@ -1,4 +1,4 @@
-from src.globals import ABC, abstractmethod
+from src.globals import ABC
 
 from .window_interface import WindowInterface
 
@@ -6,6 +6,5 @@ from .window_interface import WindowInterface
 class DialogInterface(WindowInterface, ABC):
     priority: int
 
-    @abstractmethod
     def on_esc(self) -> None:
         pass

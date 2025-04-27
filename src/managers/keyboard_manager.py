@@ -29,6 +29,7 @@ class KeyboardManager:
 
     def update(self) -> None:
         screen = self.windows.screen
+        window = self.windows.window.win
 
         try:
             key = screen.getch()
@@ -44,7 +45,7 @@ class KeyboardManager:
             # For emergencies situations
             return self.game.stop()
         elif not self.dialogs.focused and key == get_named_key("esc"):
-            if self.check_esc(screen):
+            if self.check_esc(window):
                 self.dialogs.show("menu")
                 return
 

@@ -1,6 +1,6 @@
 from signal import SIGWINCH, signal
 
-from src.globals import TYPE_CHECKING, curses, hide_cursor, sleep
+from src.globals import TYPE_CHECKING, curses, hide_cursor
 
 if TYPE_CHECKING:
     from ..console_manager import ConsoleManager
@@ -18,6 +18,7 @@ class RenderManager:
     dialogs: "DialogsManager"
 
     color_pairs: dict[str, int] = dict()
+    stdscr: curses.window
 
     def setup(self, game: "GameManager") -> None:
         self.game = game
@@ -27,13 +28,16 @@ class RenderManager:
         self.dialogs = game.dialogs
 
     def wrapper(self, stdscr: curses.window) -> None:
-        global _stdscr
-        _stdscr = stdscr
+        self.stdscr = stdscr
+
+        global render
+        render = self
 
         curses.start_color()
         curses.use_default_colors()
 
         self.windows.load_default(stdscr)
+        self.dialogs.load()
 
         self.console.load()
         self.console.success("Game started!")
@@ -43,12 +47,17 @@ class RenderManager:
 
         while self.game.is_running:
             self.update()
+            self.console.info("render")
 
     @staticmethod
     def handle_resize(signum, frame) -> None:
-        stdscr = _stdscr
+        stdscr, console = render.stdscr, render.console
+
         curses.endwin()
         stdscr.refresh()
+
+        rows, cols = stdscr.getmaxyx()
+        console.info(f"Screen resized to: {rows}x{cols}")
 
     def update(self) -> None:
         self.windows.render()

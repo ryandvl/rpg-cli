@@ -1,7 +1,8 @@
+from src.assets.imports import MenuDialog
 from src.controllers.window_controller import WindowController
 from src.errors.dialog_error import DialogError
 from src.globals import TYPE_CHECKING, curses
-from src.interfaces.window_interface import WindowInterface
+from src.interfaces.dialog_interface import DialogInterface
 
 if TYPE_CHECKING:
     from ..game_manager import GameManager
@@ -20,6 +21,9 @@ class DialogsManager:
         self.game = game
         self.windows = game.windows
 
+    def load(self) -> None:
+        self.create(MenuDialog())
+
     def get(self, name: str) -> WindowController | None:
         return self.dialogs.get(name)
 
@@ -30,7 +34,7 @@ class DialogsManager:
         for dialog in self.dialogs.values():
             dialog.render()
 
-    def create(self, interface: WindowInterface) -> curses.window:
+    def create(self, interface: DialogInterface) -> curses.window:
         name = interface.name
 
         if not name:
@@ -88,23 +92,21 @@ class DialogsManager:
 
         return True
 
-    def __register(
-        self, name: str, window: curses.window, default: bool = False
-    ) -> WindowController:
-        window_interface = WindowInterface()
-        window_interface.name = name
-        window_interface.win = window
-        window_interface.default = False
+    def __register(self, name: str, window: curses.window) -> WindowController:
+        interface = DialogInterface()
+        interface.name = name
+        interface.win = window
+        interface.default = False
 
-        dialog = WindowController(self.game, window_interface)
-        self.dialogs[name] = dialog
+        dialog = WindowController(self.game, interface)
+        self.hidden_dialogs[name] = dialog
 
         dialog.win.clear()
 
         dialog.load_layer()
         dialog.load_keyboard()
 
-        return self.dialogs[name]
+        return dialog
 
     def __unregister(self, name: str) -> None:
         del self.dialogs[name]
