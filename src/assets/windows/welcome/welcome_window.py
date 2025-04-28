@@ -7,8 +7,7 @@ class WelcomeLayer(LayerInterface):
     priority = 1
 
     def draw(self) -> None:
-        self.window.addstr("oi")
-        # self.window.addstr("welcome layer")
+        self.window.addstr("welcome layer")
 
 
 class WelcomeWindow(WindowInterface):

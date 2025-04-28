@@ -1,5 +1,7 @@
 import curses
 
+from .math import check_size
+
 
 def create_win(
     self, lines: int = 1, columns: int = 1, x: int = 0, y: int = 0
@@ -12,6 +14,19 @@ class WindowUtil:
 
     def __init__(self, window: curses.window) -> None:
         self.window = window
+
+    def move(self, x: int, y: int) -> bool:
+        try:
+            max_lines, max_cols = self.max_size()
+
+            self.window.move(
+                check_size(y, 0, max_lines),
+                check_size(x, 0, max_cols),
+            )
+        except Exception:
+            return False
+
+        return True
 
     def add_string(self, string: str, color: int = 0) -> bool:
         try:
@@ -40,19 +55,15 @@ class WindowUtil:
 
     def sub_window(
         self,
-        temp,
         lines: int | None,
         cols: int | None,
         x: int = 0,
         y: int = 0,
     ) -> "WindowUtil":
-        max_lines, max_cols = self.size()
+        max_lines, max_cols = self.max_size()
 
         lines = max_lines if lines is None else lines
         cols = max_cols if cols is None else cols
-
-        def check_size(n: int, min_n: int, max_n: int) -> int:
-            return max(min_n, min(n, max_n))
 
         subwin = self.window.subwin(
             check_size(cols, 1, max_cols),
@@ -96,7 +107,30 @@ class WindowUtil:
         self.attr_off(attr)
 
     def size(self) -> tuple[int, int]:
+        cols, lines = self.window.getmaxyx()
+        return lines, cols
+
+    def max_size(self) -> tuple[int, int]:
         return curses.COLS, curses.LINES
+
+    def fill(
+        self, y1: int, x1: int, y2: int, x2: int, char: str, attr: int = 0
+    ) -> None:
+        if not isinstance(char, str) or len(char) != 1:
+            raise ValueError("The argument 'char' is not a char.")
+
+        max_y, max_x = self.window.getmaxyx()
+
+        y1 = max(0, min(y1, max_y - 1))
+        x1 = max(0, min(x1, max_x - 1))
+        y2 = max(0, min(y2, max_y - 1))
+        x2 = max(0, min(x2, max_x - 1))
+
+        for y in range(y1, y2 + 1):
+            for x in range(x1, x2 + 1):
+                self.window.addch(y, x, char, attr)
+
+        self.window.noutrefresh()
 
     def refresh(self) -> None:
         self.window.refresh()

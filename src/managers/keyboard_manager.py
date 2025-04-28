@@ -3,7 +3,7 @@ from typing import Any, Callable
 
 from src.globals import TYPE_CHECKING, curses, get_named_key
 
-type KeyboardFunction = Callable[[curses.window, KeyboardManager, int | None], NoneType]
+type KeyboardFunction = Callable[[curses.window, "GameManager", int | None], NoneType]
 
 if TYPE_CHECKING:
     from .console_manager import ConsoleManager
@@ -36,9 +36,7 @@ class KeyboardManager:
     def update(self, forced: bool = False) -> Any:
         screen = self.windows.screen
         window = self.windows.window.win
-
-        def should_render() -> None:
-            self.render.should_render = True
+        should_render = self.should_render
 
         try:
             key = screen.getch()
@@ -59,11 +57,13 @@ class KeyboardManager:
                 return self.dialogs.show("menu")
 
         for func in self.get_inputs():
-            should_render()
-            func(screen, self, key)
+            func(screen, self.game, key)
 
         if forced:
             should_render()
+
+    def should_render(self) -> None:
+        self.render.should_render = True
 
     def get_input(self, input_name: str) -> KeyboardFunction | None:
         return self.global_inputs.get(input_name) or self.window_inputs.get(input_name)

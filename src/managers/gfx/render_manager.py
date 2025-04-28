@@ -51,6 +51,10 @@ class RenderManager:
         while self.game.is_running:
             self.update()
 
+    def get_size(self) -> tuple[int, int]:
+        cols, rows = self.stdscr.getmaxyx()
+        return rows, cols
+
     @staticmethod
     def handle_resize(signum, frame) -> None:
         stdscr, console = render.stdscr, render.console
@@ -58,7 +62,7 @@ class RenderManager:
         curses.endwin()
         stdscr.refresh()
 
-        cols, rows = stdscr.getmaxyx()
+        rows, cols = render.get_size()
         console.warn(f"Screen resized to: {rows}, {cols} (Forced Render)")
         curses.COLS = rows
         curses.LINES = cols

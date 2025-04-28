@@ -27,6 +27,10 @@ class ConsoleManager:
     logs: list[LogMessageInterface] = list()
     background: int = 0
 
+    sticked: bool = True
+    start_line: int = 0
+    visible_lines: int = 0
+
     def setup(self, game: "GameManager") -> None:
         self.game = game
         self.windows = game.windows
@@ -38,6 +42,7 @@ class ConsoleManager:
         )
 
         self.window = self.windows.create(ConsoleWindow())
+        self.visible_lines = curses.COLS
 
     def open(self) -> bool:
         if self.is_open:
@@ -45,6 +50,7 @@ class ConsoleManager:
 
         self.info("$28,17$Opening console...")
 
+        self.sticked = True
         self.windows.change(CONSOLE_WINDOW_NAME)
 
         self.success("Console opened!")
