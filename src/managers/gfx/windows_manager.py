@@ -33,7 +33,7 @@ class WindowsManager:
 
     def render(self, should_clear: bool = False) -> None:
         if should_clear:
-            self.window.win.clear()
+            self.window.win.erase()
 
         self.window.render()
 
@@ -63,7 +63,7 @@ class WindowsManager:
         del self.window
         self.window = WindowController(self.game, window_interface)
 
-        self.window.win.clear()
+        self.window.win.erase()
 
         self.window.load_layer()
         self.window.load_keyboard()

@@ -101,7 +101,7 @@ class DialogsManager:
         dialog = WindowController(self.game, interface)
         self.hidden_dialogs[name] = dialog
 
-        dialog.win.clear()
+        dialog.win.erase()
 
         dialog.load_layer()
         dialog.load_keyboard()

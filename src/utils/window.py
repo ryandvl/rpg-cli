@@ -1,5 +1,7 @@
 import curses
 
+from src.errors.window_error import WindowError
+
 from .math import check_size
 
 
@@ -11,6 +13,7 @@ def create_win(
 
 class WindowUtil:
     window: curses.window
+    last_text_size: int = 0
 
     def __init__(self, window: curses.window) -> None:
         self.window = window
@@ -20,17 +23,35 @@ class WindowUtil:
             max_lines, max_cols = self.max_size()
 
             self.window.move(
-                check_size(y, 0, max_lines),
-                check_size(x, 0, max_cols),
+                check_size(y, 0, max_cols),
+                check_size(x, 0, max_lines),
             )
         except Exception:
             return False
 
         return True
 
-    def add_string(self, string: str, color: int = 0) -> bool:
+    def add_string(
+        self,
+        string: str,
+        color: int = 0,
+        x: int | None = None,
+        y: int | None = None,
+        center: bool = False,
+    ) -> bool:
         try:
-            self.window.addstr(string, color)
+            if x is not None and y is not None:
+                max_lines, max_cols = self.max_size()
+
+                x = check_size(x, 0, max_lines)
+                y = check_size(y, 0, max_cols)
+
+                centered = x - len(string)
+                self.window.addstr(y, centered if center else x, string, color)
+            else:
+                self.window.addstr(string, color)
+
+            self.last_text = len(string)
         except Exception:
             return False
 
@@ -48,7 +69,10 @@ class WindowUtil:
         return self.add_char("\n")
 
     def clear(self) -> None:
-        self.window.clear()
+        self.window.erase()
+
+    def erase(self) -> None:
+        self.window.erase()
 
     def background(self, color: int = 0, attr: int = 0) -> None:
         self.window.bkgd(color, attr)
@@ -65,12 +89,15 @@ class WindowUtil:
         lines = max_lines if lines is None else lines
         cols = max_cols if cols is None else cols
 
-        subwin = self.window.subwin(
-            check_size(cols, 1, max_cols),
-            check_size(lines, 1, max_lines),
-            check_size(y, 0, max_lines),
-            check_size(x, 0, max_cols),
-        )
+        try:
+            subwin = self.window.subwin(
+                check_size(cols, 1, max_cols),
+                check_size(lines, 1, max_lines),
+                check_size(y, 0, max_lines),
+                check_size(x, 0, max_cols),
+            )
+        except Exception:
+            raise WindowError("Not supported window size", "Resize")
 
         return WindowUtil(subwin)
 
@@ -114,17 +141,17 @@ class WindowUtil:
         return curses.COLS, curses.LINES
 
     def fill(
-        self, y1: int, x1: int, y2: int, x2: int, char: str, attr: int = 0
+        self, x1: int, y1: int, x2: int, y2: int, char: str, attr: int = 0
     ) -> None:
         if not isinstance(char, str) or len(char) != 1:
             raise ValueError("The argument 'char' is not a char.")
 
-        max_y, max_x = self.window.getmaxyx()
+        max_x, max_y = self.size()
 
-        y1 = max(0, min(y1, max_y - 1))
         x1 = max(0, min(x1, max_x - 1))
-        y2 = max(0, min(y2, max_y - 1))
+        y1 = max(0, min(y1, max_y - 1))
         x2 = max(0, min(x2, max_x - 1))
+        y2 = max(0, min(y2, max_y - 1))
 
         for y in range(y1, y2 + 1):
             for x in range(x1, x2 + 1):

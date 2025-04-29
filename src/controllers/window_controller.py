@@ -29,7 +29,7 @@ class WindowController:
 
     def render(self, should_clear: bool = False) -> None:
         if should_clear:
-            self.win.clear()
+            self.win.erase()
 
         if layer := self.layer:
             layer.render()
