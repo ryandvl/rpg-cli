@@ -1,4 +1,11 @@
-named_keys = {"ESC": 27, "SINGLE_QUOTES": ord("'"), "DOUBLE_QUOTES": ord('"')}
+import curses
+
+named_keys = {
+    "ESC": 27,
+    "SINGLE_QUOTES": ord("'"),
+    "DOUBLE_QUOTES": ord('"'),
+    "F4": curses.KEY_F4,
+}
 
 
 def get_named_key(key: str) -> int:

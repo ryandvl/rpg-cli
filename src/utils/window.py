@@ -42,16 +42,23 @@ class WindowUtil:
         try:
             if x is not None and y is not None:
                 max_lines, max_cols = self.max_size()
-
                 x = check_size(x, 0, max_lines)
                 y = check_size(y, 0, max_cols)
 
-                centered = x - len(string)
+                lines, _ = self.size()
+                centered = lines // 2 - len(string) // 2
+
                 self.window.addstr(y, centered if center else x, string, color)
             else:
-                self.window.addstr(string, color)
+                if center:
+                    lines, _ = self.size()
+                    centered = lines // 2 - len(string) // 2
 
-            self.last_text = len(string)
+                    self.window.addstr(y or 0, centered if center else x, string, color)
+                else:
+                    self.window.addstr(string, color)
+
+            self.last_text_size = len(string)
         except Exception:
             return False
 

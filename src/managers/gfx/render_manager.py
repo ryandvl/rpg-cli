@@ -1,6 +1,8 @@
 from signal import SIGWINCH, signal
 
-from src.globals import TYPE_CHECKING, curses, hide_cursor
+from config import MIN_SIZE
+from src.globals import BOLD, TYPE_CHECKING, curses, hide_cursor
+from src.utils.window import WindowUtil
 
 if TYPE_CHECKING:
     from ..console_manager import ConsoleManager
@@ -22,6 +24,7 @@ class RenderManager:
 
     should_render: bool = True
     should_clear: bool = False
+    is_valid_size: bool = True
 
     def setup(self, game: "GameManager") -> None:
         self.game = game
@@ -48,12 +51,76 @@ class RenderManager:
         hide_cursor()
         signal(SIGWINCH, self.handle_resize)
 
+        self.check_size()
         while self.game.is_running:
             self.update()
 
     def get_size(self) -> tuple[int, int]:
         cols, rows = self.stdscr.getmaxyx()
         return rows, cols
+
+    def check_size(self) -> bool:
+        rows, cols = self.get_size()
+        self.is_valid_size = rows >= MIN_SIZE[0] and cols >= MIN_SIZE[1]
+
+        return self.is_valid_size
+
+    def invalid_size(self) -> None:
+        if self.is_valid_size:
+            return
+
+        stdscr = self.stdscr
+        screen = WindowUtil(stdscr)
+        gcp = self.get_color_pair
+
+        screen.background(gcp(0, 26))
+        screen.erase()
+
+        lines, cols = screen.size()
+        subwin = screen.sub_window(lines // 2, round(cols / 1.8), lines // 4, cols // 4)
+        subwin_lines, _ = subwin.size()
+        subwin.background(gcp(0, 10))
+        subwin.add_string(
+            "INVALID SIZE",
+            color=gcp(16, 10) | BOLD,
+            y=1,
+            center=True,
+        )
+
+        subwin.add_string(
+            f"Current size: {lines}, {cols}",
+            x=subwin_lines // 2,
+            y=3,
+            center=True,
+            color=gcp(0, 10) | BOLD,
+        )
+
+        min_w, min_h = MIN_SIZE
+        subwin.add_string(
+            f"Minimal size: {min_w}, {min_h}",
+            x=subwin_lines // 2,
+            y=4,
+            center=True,
+            color=gcp(0, 10) | BOLD,
+        )
+
+        subwin.add_string(
+            " Change window size or ",
+            x=subwin_lines // 2,
+            y=6,
+            color=gcp(1, 250),
+            center=True,
+        )
+
+        subwin.add_string(
+            " Press Q or F4 to quit ",
+            x=subwin_lines // 2,
+            y=7,
+            color=gcp(1, 250),
+            center=True,
+        )
+
+        screen.refresh()
 
     @staticmethod
     def handle_resize(signum, frame) -> None:
@@ -66,18 +133,26 @@ class RenderManager:
         console.warn(f"Screen resized to: {rows}, {cols} (Forced Render)")
         curses.COLS = rows
         curses.LINES = cols
+        render.check_size()
 
         render.update(True)
 
     def update(self, forced: bool = False) -> None:
-        if render.should_clear:
-            render.should_clear = False
+        if self.should_clear:
+            self.should_clear = False
+
+        if not self.is_valid_size:
+            self.should_clear = True
+
+            self.keyboard.update()
+
+            return self.invalid_size()
 
         if forced or self.should_render:
-            render.should_clear = forced
+            self.should_clear = forced
 
-            self.windows.render(render.should_clear)
-            self.dialogs.render(render.should_clear)
+            self.windows.render(self.should_clear)
+            self.dialogs.render(self.should_clear)
 
             self.should_render = False
 

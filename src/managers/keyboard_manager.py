@@ -1,7 +1,7 @@
 from types import NoneType
 from typing import Any, Callable
 
-from src.globals import TYPE_CHECKING, curses, get_named_key
+from src.globals import TYPE_CHECKING, curses, get_char_key, get_named_key
 
 type KeyboardFunction = Callable[[curses.window, "GameManager", int | None], NoneType]
 
@@ -43,14 +43,20 @@ class KeyboardManager:
         except:  # noqa: E722
             key = None
 
+        if key == get_named_key("f4"):
+            # For emergencies situations
+            return self.game.stop()
+
+        if not self.render.is_valid_size:
+            if key == get_char_key("q"):
+                self.game.stop()
+
+            return
+
         # TODO: TEMPORARY
         if key == get_named_key("single_quotes"):
             should_render()
             return self.console.open_or_close()
-
-        if key == curses.KEY_F4:
-            # For emergencies situations
-            return self.game.stop()
         elif not self.dialogs.focused and key == get_named_key("esc"):
             if self.check_esc(window):
                 should_render()
