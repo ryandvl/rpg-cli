@@ -1,4 +1,3 @@
-from src.assets.imports import MenuDialog
 from src.controllers.window_controller import WindowController
 from src.errors.dialog_error import DialogError
 from src.globals import TYPE_CHECKING, curses
@@ -21,20 +20,17 @@ class DialogsManager:
         self.game = game
         self.windows = game.windows
 
-    def load(self) -> None:
-        self.create(MenuDialog())
-
     def get(self, name: str) -> WindowController | None:
-        return self.dialogs.get(name)
+        return self.dialogs.get(name) or self.hidden_dialogs.get(name)
 
     def get_focused(self) -> WindowController | None:
         return self.dialogs.get(self.focused) if self.focused else None
 
-    def render(self, should_clear: bool = False) -> None:
+    def render(self) -> None:
         for dialog in self.dialogs.values():
-            dialog.render(should_clear)
+            dialog.render()
 
-    def create(self, interface: DialogInterface) -> curses.window:
+    def open(self, interface: DialogInterface) -> curses.window:
         name = interface.name
 
         if not name:
@@ -48,7 +44,18 @@ class DialogsManager:
         current_win = self.windows.window.win
         window = current_win.subwin(lines, columns, begin_x, begin_y)
 
-        self.__register(name, window)
+        interface.name = name
+        interface.win = window
+        interface.default = False
+
+        dialog = WindowController(self.game, interface)
+        self.dialogs[name] = dialog
+
+        dialog.win.erase()
+
+        dialog.load_layer()
+        dialog.load_keyboard()
+        # self.__register(name, window)
 
         return window
 
@@ -63,7 +70,7 @@ class DialogsManager:
         return True
 
     def hide(self, name: str) -> bool:
-        dialog = self.hidden_dialogs.get(name)
+        dialog = self.dialogs.get(name)
 
         if dialog or not self.get(name):
             return False
@@ -74,7 +81,7 @@ class DialogsManager:
         return True
 
     def show(self, name: str) -> bool:
-        dialog = self.dialogs.get(name)
+        dialog = self.hidden_dialogs.get(name)
 
         if not dialog or not self.get(name):
             return False

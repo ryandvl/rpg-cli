@@ -1,7 +1,7 @@
 from signal import SIGWINCH, signal
 
-from config import MIN_SIZE
-from src.globals import BOLD, TYPE_CHECKING, curses, hide_cursor
+from config import MAX_FPS, MIN_SIZE
+from src.globals import BOLD, TYPE_CHECKING, curses, hide_cursor, sleep
 from src.utils.window import WindowUtil
 
 if TYPE_CHECKING:
@@ -22,8 +22,6 @@ class RenderManager:
     color_pairs: dict[str, int] = dict()
     stdscr: curses.window
 
-    should_render: bool = True
-    should_clear: bool = False
     is_valid_size: bool = True
 
     def setup(self, game: "GameManager") -> None:
@@ -43,7 +41,6 @@ class RenderManager:
         curses.use_default_colors()
 
         self.windows.load_default(stdscr)
-        self.dialogs.load()
 
         self.console.load()
         self.console.success("Game started!")
@@ -51,9 +48,11 @@ class RenderManager:
         hide_cursor()
         signal(SIGWINCH, self.handle_resize)
 
+        stdscr.nodelay(True)
         self.check_size()
         while self.game.is_running:
             self.update()
+            sleep(1 / MAX_FPS)
 
     def get_size(self) -> tuple[int, int]:
         cols, rows = self.stdscr.getmaxyx()
@@ -135,28 +134,16 @@ class RenderManager:
         curses.LINES = cols
         render.check_size()
 
-        render.update(True)
-
-    def update(self, forced: bool = False) -> None:
-        if self.should_clear:
-            self.should_clear = False
-
+    def update(self) -> None:
         if not self.is_valid_size:
-            self.should_clear = True
-
             self.keyboard.update()
 
             return self.invalid_size()
 
-        if forced or self.should_render:
-            self.should_clear = forced
+        self.windows.render()
+        self.dialogs.render()
 
-            self.windows.render(self.should_clear)
-            self.dialogs.render(self.should_clear)
-
-            self.should_render = False
-
-        self.keyboard.update(forced)
+        self.keyboard.update()
 
     def create_color_pair(self, foreground: int, background: int) -> int:
         newID: int = len(self.color_pairs.keys()) + 1

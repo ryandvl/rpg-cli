@@ -27,9 +27,8 @@ class WindowController:
         self.name = interface.name
         self.win = interface.win
 
-    def render(self, should_clear: bool = False) -> None:
-        if should_clear:
-            self.win.erase()
+    def render(self) -> None:
+        self.win.erase()
 
         if layer := self.layer:
             layer.render()

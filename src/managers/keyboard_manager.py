@@ -1,6 +1,7 @@
 from types import NoneType
 from typing import Any, Callable
 
+from src.assets.dialogs.menu.menu_dialog import MenuDialog
 from src.globals import TYPE_CHECKING, curses, get_char_key, get_named_key
 
 type KeyboardFunction = Callable[[curses.window, "GameManager", int | None], NoneType]
@@ -35,8 +36,6 @@ class KeyboardManager:
 
     def update(self, forced: bool = False) -> Any:
         screen = self.windows.screen
-        window = self.windows.window.win
-        should_render = self.should_render
 
         try:
             key = screen.getch()
@@ -55,21 +54,16 @@ class KeyboardManager:
 
         # TODO: TEMPORARY
         if key == get_named_key("single_quotes"):
-            should_render()
             return self.console.open_or_close()
         elif not self.dialogs.focused and key == get_named_key("esc"):
-            if self.check_esc(window):
-                should_render()
-                return self.dialogs.show("menu")
+            if self.check_esc(screen):
+                if self.console.is_open:
+                    return self.console.close()
+
+                return self.dialogs.open(MenuDialog())
 
         for func in self.get_inputs():
             func(screen, self.game, key)
-
-        if forced:
-            should_render()
-
-    def should_render(self) -> None:
-        self.render.should_render = True
 
     def get_input(self, input_name: str) -> KeyboardFunction | None:
         return self.global_inputs.get(input_name) or self.window_inputs.get(input_name)
@@ -86,13 +80,9 @@ class KeyboardManager:
         return result
 
     def check_esc(self, window: curses.window) -> bool:
-        window.nodelay(True)
-
         key_combo = window.getch()
         if key_combo == -1:
             return True
-
-        window.nodelay(False)
 
         return False
 

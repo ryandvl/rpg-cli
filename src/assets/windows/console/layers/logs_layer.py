@@ -14,17 +14,11 @@ def check_move(window: curses.window, game: "GameManager", key: int | None):
     start_line = console.start_line
     logs = console.logs
 
-    if key == ord("q"):
-        console.info(f"{console.visible_lines} {len(console.logs) + 1}")
-        keyboard.should_render()
-        return
-
     has_min_logs = len(logs) >= console.visible_lines
     if not has_min_logs:
         return
 
     jump_length = 22
-    render = True
     if key in (curses.KEY_UP, curses.KEY_PPAGE):
         console.start_line = max(0, start_line - jump_length)
         console.sticked = False
@@ -33,11 +27,6 @@ def check_move(window: curses.window, game: "GameManager", key: int | None):
         console.sticked = False
     elif key == get_char_key("s"):
         console.sticked = not console.sticked
-    else:
-        render = False
-
-    if render:
-        keyboard.should_render()
 
 
 class LogsLayer(LayerInterface):
@@ -93,9 +82,9 @@ class LogsLayer(LayerInterface):
 
         footer_window.add_string(
             string=" LEAVE ",
-            x=lines - 10,
+            x=lines - 18,
             y=footer_middle,
-            center=True,
+            center=False,
             color=self.gcp(0, 9) | BOLD,
         )
         footer_window.add_string(string=" <ESC> ", color=self.gcp(17, 8) | BOLD)
