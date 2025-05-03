@@ -41,8 +41,9 @@ class RenderManager:
         curses.use_default_colors()
 
         self.windows.load_default(stdscr)
-
+        self.dialogs.load()
         self.console.load()
+
         self.console.success("Game started!")
 
         hide_cursor()
@@ -50,6 +51,7 @@ class RenderManager:
 
         stdscr.nodelay(True)
         self.check_size()
+
         while self.game.is_running:
             self.update()
             sleep(1 / MAX_FPS)
@@ -63,6 +65,52 @@ class RenderManager:
         self.is_valid_size = rows >= MIN_SIZE[0] and cols >= MIN_SIZE[1]
 
         return self.is_valid_size
+
+    @staticmethod
+    def handle_resize(_, __) -> None:
+        stdscr, console = render.stdscr, render.console
+
+        curses.endwin()
+        stdscr.refresh()
+
+        rows, cols = render.get_size()
+        console.warn(f"Screen resized to: {rows}, {cols} (Forced Render)")
+        curses.COLS = rows
+        curses.LINES = cols
+        render.check_size()
+
+    def update(self) -> None:
+        if not self.is_valid_size:
+            self.keyboard.update()
+
+            return self.invalid_size()
+
+        self.windows.render()
+        self.dialogs.render()
+
+        curses.doupdate()
+
+        self.keyboard.update()
+
+    def create_color_pair(self, foreground: int, background: int) -> int:
+        newID: int = len(self.color_pairs.keys()) + 1
+        name = f"{foreground} {background}"
+
+        curses.init_pair(newID, foreground, background)
+        self.color_pairs[name] = curses.color_pair(newID)
+
+        return self.color_pairs[name]
+
+    def get_color_pair(self, foreground: int = 0, background: int = 0) -> int:
+        foreground = foreground - 1
+        background = background - 1
+
+        name = f"{foreground} {background}"
+
+        if not self.color_pairs.get(name):
+            return self.create_color_pair(foreground, background)
+
+        return self.color_pairs[name]
 
     def invalid_size(self) -> None:
         if self.is_valid_size:
@@ -120,47 +168,3 @@ class RenderManager:
         )
 
         screen.refresh()
-
-    @staticmethod
-    def handle_resize(signum, frame) -> None:
-        stdscr, console = render.stdscr, render.console
-
-        curses.endwin()
-        stdscr.refresh()
-
-        rows, cols = render.get_size()
-        console.warn(f"Screen resized to: {rows}, {cols} (Forced Render)")
-        curses.COLS = rows
-        curses.LINES = cols
-        render.check_size()
-
-    def update(self) -> None:
-        if not self.is_valid_size:
-            self.keyboard.update()
-
-            return self.invalid_size()
-
-        self.windows.render()
-        self.dialogs.render()
-
-        self.keyboard.update()
-
-    def create_color_pair(self, foreground: int, background: int) -> int:
-        newID: int = len(self.color_pairs.keys()) + 1
-        name = f"{foreground} {background}"
-
-        curses.init_pair(newID, foreground, background)
-        self.color_pairs[name] = curses.color_pair(newID)
-
-        return self.color_pairs[name]
-
-    def get_color_pair(self, foreground: int = 0, background: int = 0) -> int:
-        foreground = foreground - 1
-        background = background - 1
-
-        name = f"{foreground} {background}"
-
-        if not self.color_pairs.get(name):
-            return self.create_color_pair(foreground, background)
-
-        return self.color_pairs[name]

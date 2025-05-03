@@ -100,13 +100,28 @@ class WindowUtil:
             subwin = self.window.subwin(
                 check_size(cols, 1, max_cols),
                 check_size(lines, 1, max_lines),
-                check_size(y, 0, max_lines),
-                check_size(x, 0, max_cols),
+                check_size(y, 0, max_cols),
+                check_size(x, 0, max_lines),
             )
         except Exception:
-            raise WindowError("Not supported window size", "Resize")
+            raise WindowError(
+                f"Not supported window size: {lines}, {cols} (Max: {max_lines}, {max_cols})",
+                "Resize",
+            )
 
         return WindowUtil(subwin)
+
+    def sub_window_center(
+        self,
+        lines: int,
+        cols: int,
+    ) -> "WindowUtil":
+        w, h = self.size()
+
+        x = (w - lines) // 2
+        y = (h - cols) // 2
+
+        return self.sub_window(lines, cols, x, y)
 
     def write(self, string: str, x: int, y: int, attr: int = 0) -> None:
         self.window.move(y, x)

@@ -7,3 +7,6 @@ class MenuDialog(DialogInterface):
     name = "menu"
     priority = 1
     layers = list([MenuLayer()])
+
+    def on_esc(self) -> None:
+        pass

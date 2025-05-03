@@ -51,5 +51,4 @@ class GameManager:
                     print("Game closed")
 
     def stop(self) -> None:
-        self.render.should_render = True
         self.is_running = False

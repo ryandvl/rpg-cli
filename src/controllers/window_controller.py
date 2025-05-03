@@ -33,7 +33,7 @@ class WindowController:
         if layer := self.layer:
             layer.render()
 
-        self.win.refresh()
+        self.win.noutrefresh()
 
     def load_layer(self) -> None:
         if self.layer:

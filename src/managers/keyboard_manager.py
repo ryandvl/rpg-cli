@@ -1,7 +1,6 @@
 from types import NoneType
 from typing import Any, Callable
 
-from src.assets.dialogs.menu.menu_dialog import MenuDialog
 from src.globals import TYPE_CHECKING, curses, get_char_key, get_named_key
 
 type KeyboardFunction = Callable[[curses.window, "GameManager", int | None], NoneType]
@@ -34,8 +33,10 @@ class KeyboardManager:
 
         curses.set_escdelay(25)  # Default: 1000ms
 
-    def update(self, forced: bool = False) -> Any:
+    def update(self) -> Any:
         screen = self.windows.screen
+        console = self.console
+        dialogs = self.dialogs
 
         try:
             key = screen.getch()
@@ -52,15 +53,17 @@ class KeyboardManager:
 
             return
 
-        # TODO: TEMPORARY
-        if key == get_named_key("single_quotes"):
-            return self.console.open_or_close()
-        elif not self.dialogs.focused and key == get_named_key("esc"):
-            if self.check_esc(screen):
-                if self.console.is_open:
-                    return self.console.close()
+        if key == get_named_key("esc"):
+            if not self.check_esc(screen):
+                return
 
-                return self.dialogs.open(MenuDialog())
+            if not dialogs.focused:
+                if console.is_open:
+                    return console.close()
+
+                return dialogs.open("menu", focus=True)
+            else:
+                return dialogs.close("menu")
 
         for func in self.get_inputs():
             func(screen, self.game, key)

@@ -50,15 +50,18 @@ class WindowsManager:
 
         return window
 
-    def change(self, name: str) -> bool:
-        window_interface = self.get(name)
+    def change(self, name: str, default: WindowInterface | None = None) -> bool:
+        if not default:
+            window_interface = self.get(name)
+            if not window_interface:
+                return False
 
-        if not window_interface:
-            return False
+            self.last_window = self.window.name
+            del self.window
+        else:
+            window_interface = default
+            self.last_window = name
 
-        self.last_window = self.window.name
-
-        del self.window
         self.window = WindowController(self.game, window_interface)
 
         self.window.win.erase()
@@ -78,8 +81,7 @@ class WindowsManager:
         self.windows[interface.name] = interface
 
         if interface.default:
-            self.window = WindowController(self.game, interface)
-            self.last_window = interface.name
+            self.change(interface.name, interface)
 
         return interface
 
