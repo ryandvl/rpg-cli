@@ -1,8 +1,8 @@
 import curses
 
 from src.errors.window_error import WindowError
-
-from .math import check_size
+from src.globals import check_size
+from src.interfaces.enum.position_enum import TitlePosition
 
 
 def create_win(
@@ -14,6 +14,7 @@ def create_win(
 class WindowUtil:
     window: curses.window
     last_text_size: int = 0
+    title: str = ""
 
     def __init__(self, window: curses.window) -> None:
         self.window = window
@@ -48,7 +49,7 @@ class WindowUtil:
                 lines, _ = self.size()
                 centered = lines // 2 - len(string) // 2
 
-                self.window.addstr(y, centered if center else x, string, color)
+                self.window.addstr(y, x + centered if center else x, string, color)
             else:
                 if center:
                     lines, _ = self.size()
@@ -127,19 +128,6 @@ class WindowUtil:
         self.window.move(y, x)
         self.window.addstr(string, attr)
 
-    def top_left_title(self, title: str, attr: int) -> None:
-        self.write(title, 1, 0, attr)
-
-    def top_center_title(self, title: str, attr: int) -> None:
-        _, width = self.window.getmaxyx()
-
-        self.write(title, (width - len(title)) // 2, 0, attr)
-
-    def top_right_title(self, title: str, attr: int) -> None:
-        _, width = self.window.getmaxyx()
-
-        self.write(title, (width - len(title)) - 1, 0, attr)
-
     def attr_on(self, attr: int) -> None:
         self.window.attron(attr)
 
@@ -154,6 +142,41 @@ class WindowUtil:
         ) if hide else self.window.border()
 
         self.attr_off(attr)
+
+    def set_title(
+        self,
+        string: str,
+        color: int = 0,
+        position: TitlePosition = TitlePosition.TOP_CENTER,
+    ) -> None:
+        lines, cols = self.size()
+        cols -= 1
+
+        size = len(string)
+
+        pos_func = {
+            TitlePosition.TOP_LEFT: lambda: (0, 0),
+            TitlePosition.TOP_CENTER: lambda: (lines // 2 - size // 2, 0),
+            TitlePosition.TOP_RIGHT: lambda: (lines - size, 0),
+            TitlePosition.BOTTOM_LEFT: lambda: (0, cols),
+            TitlePosition.BOTTOM_CENTER: lambda: (lines // 2 - size // 2, cols),
+            TitlePosition.BOTTOM_RIGHT: lambda: (lines - size, cols),
+        }
+
+        try:
+            func = pos_func[position]
+        except KeyError:
+            raise WindowError(f"Invalid TitlePosition: {position}", "Title")
+
+        x, y = func()
+        self.add_string(
+            string,
+            color,
+            x,
+            y,
+        )
+
+        self.title = string
 
     def size(self) -> tuple[int, int]:
         cols, lines = self.window.getmaxyx()
@@ -182,4 +205,4 @@ class WindowUtil:
         self.window.noutrefresh()
 
     def refresh(self) -> None:
-        self.window.refresh()
+        self.window.noutrefresh()

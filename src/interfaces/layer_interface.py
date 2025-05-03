@@ -4,6 +4,7 @@ from src.globals import ABC, TYPE_CHECKING, abstractmethod, curses
 from src.utils.window import WindowUtil
 
 if TYPE_CHECKING:
+    from ..controllers.selection_controller import SelectionController
     from ..managers.console_manager import ConsoleManager
     from ..managers.game_manager import GameManager
     from ..managers.gfx.render_manager import RenderManager
@@ -22,8 +23,13 @@ class LayerInterface(ABC):
     window: curses.window
     gcp: "GetColorPairs"
     inputs: dict[str, "KeyboardFunction"] = dict()
+    selection: "SelectionController"
+    has_selection: bool = False
 
     util: WindowUtil
+
+    def load(self) -> None:
+        pass
 
     @abstractmethod
     def draw(self) -> None:

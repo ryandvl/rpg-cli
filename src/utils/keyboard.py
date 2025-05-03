@@ -5,6 +5,7 @@ named_keys = {
     "SINGLE_QUOTES": ord("'"),
     "DOUBLE_QUOTES": ord('"'),
     "F4": curses.KEY_F4,
+    "SPACE": ord(" "),
 }
 
 

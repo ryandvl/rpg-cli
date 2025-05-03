@@ -1,11 +1,13 @@
 from src.controllers.window_controller import WindowController
 from src.errors.dialog_error import DialogError
-from src.globals import TYPE_CHECKING, curses
+from src.globals import TYPE_CHECKING, copy, curses
 from src.interfaces.dialog_interface import DialogInterface
 
 from ...assets.dialogs.menu.menu_dialog import MenuDialog
 
 if TYPE_CHECKING:
+    from src.controllers.selection_controller import SelectionController
+
     from ..game_manager import GameManager
     from .windows_manager import WindowsManager
 
@@ -50,10 +52,12 @@ class DialogsManager:
         return interface
 
     def open(self, name: str, focus: bool = False) -> WindowController:
-        interface = self.interfaces.get(name)
+        i = self.interfaces.get(name)
 
-        if not interface:
+        if not i:
             raise DialogError("Interface not found")
+
+        interface = copy(i)
 
         current_win = self.windows.window.win
 
@@ -84,7 +88,10 @@ class DialogsManager:
         if not dialog:
             return False
 
-        self.hide(name)
+        if self.focused == name:
+            self.focused = None
+
+        del self.dialogs[name]
 
         return True
 
@@ -95,6 +102,10 @@ class DialogsManager:
             return False
 
         self.focused = name
+
+        has_selection, selection = self.has_selection(dialog)
+        if has_selection:
+            self.game.selection = selection
 
         return True
 
@@ -131,3 +142,18 @@ class DialogsManager:
         del self.hidden_dialogs[name]
 
         return True
+
+    def has_selection(
+        self, dialog: WindowController
+    ) -> tuple[bool, "SelectionController | None"]:
+        has_selection = False
+        selection = None
+
+        if dialog.layer:
+            for layer in dialog.layer.layers.values():
+                has_selection = layer.has_selection
+                if has_selection:
+                    selection = layer.selection
+                    break
+
+        return has_selection, selection

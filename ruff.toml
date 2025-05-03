@@ -1,1 +1,1 @@
-lint.per-file-ignores = {"src/globals.py" = ["F401", "F403"], "src/assets/imports.py" = ["F401", "F403"]}
+lint.per-file-ignores = {"src/globals.py" = ["F401", "F403"], "src/assets/imports.py" = ["F401", "F403"], "config.py" = ["F401", "F403", "F405"]}

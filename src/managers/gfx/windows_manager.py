@@ -32,7 +32,6 @@ class WindowsManager:
         return self.windows.get(name)
 
     def render(self) -> None:
-        self.window.win.erase()
         self.window.render()
 
     def create(self, interface: WindowInterface) -> curses.window:

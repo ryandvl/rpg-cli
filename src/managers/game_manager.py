@@ -1,11 +1,16 @@
 import sys
 from curses import wrapper
 
+from src.globals import TYPE_CHECKING
+
 from .console_manager import ConsoleManager
 from .gfx.dialogs_manager import DialogsManager
 from .gfx.render_manager import RenderManager
 from .gfx.windows_manager import WindowsManager
 from .keyboard_manager import KeyboardManager
+
+if TYPE_CHECKING:
+    from src.controllers.selection_controller import SelectionController
 
 
 class GameManager:
@@ -14,6 +19,8 @@ class GameManager:
     windows: "WindowsManager"
     dialogs: "DialogsManager"
     keyboard: "KeyboardManager"
+
+    selection: "SelectionController | None" = None
 
     is_running: bool = False
     loaded: bool = False

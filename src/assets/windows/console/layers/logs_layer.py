@@ -8,7 +8,6 @@ if TYPE_CHECKING:
 
 def check_move(window: curses.window, game: "GameManager", key: int | None):
     console = game.console
-    keyboard = game.keyboard
 
     visible_lines = console.visible_lines
     start_line = console.start_line

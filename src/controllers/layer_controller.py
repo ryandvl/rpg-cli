@@ -3,6 +3,7 @@ from src.utils.window import WindowUtil
 
 from ..interfaces.layer_interface import LayerInterface
 from ..interfaces.window_interface import WindowInterface
+from .selection_controller import SelectionController
 
 if TYPE_CHECKING:
     from ..managers.game_manager import GameManager
@@ -47,7 +48,12 @@ class LayerController:
         interface.gcp = interface.render.get_color_pair
         interface.util = WindowUtil(interface.window)
 
+        if interface.has_selection:
+            interface.selection = SelectionController(self.game)
+
         self.layers[name] = interface
+        interface.load()
+
         self.__sort()
 
         return interface
