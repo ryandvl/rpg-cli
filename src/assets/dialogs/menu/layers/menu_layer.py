@@ -22,7 +22,7 @@ def check_selection(window: curses.window, game: "GameManager", key: int | None)
     elif key in VALID_SELECT_KEYS:
 
         def close():
-            game.dialogs.close("menu")
+            game.dialogs.hide("menu")
 
         id = selection.selected_id
         if id == "return":  # Return to Game

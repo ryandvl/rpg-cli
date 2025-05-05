@@ -63,7 +63,7 @@ class KeyboardManager:
 
                 return dialogs.open("menu", focus=True)
             else:
-                return dialogs.close("menu")
+                return dialogs.hide("menu")
 
         for func in self.get_inputs():
             func(screen, self.game, key)

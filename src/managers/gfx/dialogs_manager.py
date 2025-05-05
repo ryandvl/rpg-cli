@@ -1,6 +1,6 @@
 from src.controllers.window_controller import WindowController
 from src.errors.dialog_error import DialogError
-from src.globals import TYPE_CHECKING, copy, curses
+from src.globals import TYPE_CHECKING, curses
 from src.interfaces.dialog_interface import DialogInterface
 
 from ...assets.dialogs.menu.menu_dialog import MenuDialog
@@ -19,7 +19,6 @@ class DialogsManager:
     focused: str | None = None
     dialogs: dict[str, WindowController] = dict()
     hidden_dialogs: dict[str, WindowController] = dict()
-    interfaces: dict[str, DialogInterface] = dict()
 
     def setup(self, game: "GameManager") -> None:
         self.game = game
@@ -41,23 +40,11 @@ class DialogsManager:
     def register(self, interface: DialogInterface) -> DialogInterface:
         name = interface.name
 
-        if not name or self.interfaces.get(name):
+        if not name or self.get(name):
             raise DialogError("Name not found")
 
         interface.default = False
         interface.game = self.game
-
-        self.interfaces[name] = interface
-
-        return interface
-
-    def open(self, name: str, focus: bool = False) -> WindowController:
-        i = self.interfaces.get(name)
-
-        if not i:
-            raise DialogError("Interface not found")
-
-        interface = copy(i)
 
         current_win = self.windows.window.win
 
@@ -70,30 +57,28 @@ class DialogsManager:
         interface.win = window
 
         dialog = WindowController(self.game, interface)
-        self.dialogs[name] = dialog
+        self.hidden_dialogs[name] = dialog
 
         dialog.win.erase()
 
         dialog.load_layer()
         dialog.load_keyboard()
 
-        if focus:
-            self.focus(interface.name)
+        return interface
 
-        return dialog
-
-    def close(self, name: str) -> bool:
-        dialog = self.dialogs.get(name)
+    def open(self, name: str, focus: bool = False) -> WindowController:
+        dialog = self.hidden_dialogs.get(name)
 
         if not dialog:
-            return False
+            raise DialogError("Interface not found")
 
-        if self.focused == name:
-            self.focused = None
+        self.dialogs[name] = dialog
+        del self.hidden_dialogs[name]
 
-        del self.dialogs[name]
+        if focus:
+            self.focus(name)
 
-        return True
+        return dialog
 
     def focus(self, name: str) -> bool:
         dialog = self.dialogs.get(name)
@@ -116,9 +101,12 @@ class DialogsManager:
             return False
 
         if self.focused == name:
+            if self.has_selection(dialog):
+                self.game.selection = None
+
             self.focused = None
 
-        self.hidden_dialogs[name] = self.dialogs[name]
+        self.hidden_dialogs[name] = dialog
         del self.dialogs[name]
 
         return True

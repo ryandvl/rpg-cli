@@ -68,7 +68,7 @@ class WindowsManager:
         self.window.load_layer()
         self.window.load_keyboard()
 
-        self.window.win.refresh()
+        self.window.win.noutrefresh()
 
         return True
 

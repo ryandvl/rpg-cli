@@ -37,7 +37,7 @@ class LayerController:
         name = interface.name
 
         if self.hidden_layers.get(name):
-            return
+            return interface
 
         interface.window = self.window.win
 

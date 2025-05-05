@@ -9,6 +9,8 @@ class WelcomeLayer(LayerInterface):
     def draw(self) -> None:
         screen = self.util
 
+        screen.erase()
+
         screen.add_string("welcome", x=0, y=0)
 
 
