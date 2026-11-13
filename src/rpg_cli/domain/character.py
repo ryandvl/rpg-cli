@@ -38,6 +38,9 @@ class Character:
         if amount < 0:
             raise ValueError("amount must not be negative")
 
+        if not self.is_alive:
+            raise ValueError("cannot damage a dead character")
+
         before = self.hp
         self.hp = max(self.hp - amount, 0)
 

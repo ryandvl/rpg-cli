@@ -19,13 +19,13 @@ def test_can_start_with_custom_hp():
 
 @pytest.mark.parametrize("max_hp", [0, -5])
 def test_non_positive_max_hp_raises(max_hp):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="max_hp must be positive"):
         Character(name="Hero", max_hp=max_hp)
 
 
 @pytest.mark.parametrize("hp", [-1, 11])
 def test_hp_out_of_range_raises(hp):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="hp must be between"):
         Character(name="Hero", max_hp=10, hp=hp)
 
 
@@ -54,8 +54,19 @@ def test_take_damage_does_not_go_below_zero():
 def test_negative_damage_raises():
     hero = Character(name="Hero", max_hp=10)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="must not be negative"):
         hero.take_damage(-1)
+
+
+def test_take_damage_on_dead_character_raises():
+    hero = Character(name="Hero", max_hp=10)
+
+    hero.take_damage(10)
+
+    assert not hero.is_alive
+
+    with pytest.raises(ValueError, match="cannot damage a dead character"):
+        hero.take_damage(10)
 
 
 # --- Heal ---
@@ -82,7 +93,7 @@ def test_heal_does_not_exceed_max_hp():
 def test_negative_heal_raises():
     hero = Character(name="Hero", max_hp=10)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="must not be negative"):
         hero.heal(-1)
 
 
@@ -93,7 +104,7 @@ def test_heal_dead_character():
 
     assert not hero.is_alive
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="cannot heal a dead character"):
         hero.heal(1)
 
 
