@@ -10,3 +10,6 @@ schema.db
 
 # Backup
 backup/
+
+# TODO: Temporary
+docs/
