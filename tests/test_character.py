@@ -29,6 +29,19 @@ def test_hp_out_of_range_raises(hp):
         Character(name="Hero", max_hp=10, hp=hp)
 
 
+def test_attack_and_defense_default_to_zero():
+    hero = Character(name="Hero", max_hp=10)
+
+    assert hero.attack == 0
+    assert hero.defense == 0
+
+
+@pytest.mark.parametrize("field", ["attack", "defense"])
+def test_negative_combat_stat_raises(field):
+    with pytest.raises(ValueError, match=f"{field} must not be negative"):
+        Character(name="Hero", max_hp=10, **{field: -1})
+
+
 # --- Damage ---
 
 
