@@ -17,7 +17,10 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = ["pytest>=9.2.0", "ruff>=0.17.5"]
 
-[lint]
+[tool.ruff]
+src = ["src", "tests"]
+
+[tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
 
 [tool.pyright]
