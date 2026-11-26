@@ -9,6 +9,7 @@ class Character:
 
     attack: int
     defense: int
+    crit_chance: float
 
     def __init__(
         self,
@@ -17,6 +18,7 @@ class Character:
         hp: int | None = None,
         attack: int = 0,
         defense: int = 0,
+        crit_chance: float = 0.0,
     ) -> None:
         if max_hp <= 0:
             raise ValueError("max_hp must be positive")
@@ -27,12 +29,16 @@ class Character:
 
         self.attack = attack
         self.defense = defense
+        self.crit_chance = crit_chance
 
         if self.attack < 0:
             raise ValueError("attack must not be negative")
 
         if self.defense < 0:
             raise ValueError("defense must not be negative")
+
+        if not 0.0 <= self.crit_chance <= 1.0:
+            raise ValueError("crit_chance must be between 0.0 and 1.0")
 
         if not 0 <= self.hp <= self.max_hp:
             raise ValueError("hp must be between 0 and max_hp")

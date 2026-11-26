@@ -36,6 +36,25 @@ def test_attack_and_defense_default_to_zero():
     assert hero.defense == 0
 
 
+def test_crit_chance_defaults_to_zero():
+    hero = Character(name="Hero", max_hp=10)
+
+    assert hero.crit_chance == 0.0
+
+
+@pytest.mark.parametrize("crit_chance", [0.0, 1.0])
+def test_crit_chance_accepts_limits(crit_chance):
+    hero = Character(name="Hero", max_hp=10, crit_chance=crit_chance)
+
+    assert hero.crit_chance == crit_chance
+
+
+@pytest.mark.parametrize("crit_chance", [-0.1, 1.1])
+def test_crit_chance_out_of_range_raises(crit_chance):
+    with pytest.raises(ValueError, match="crit_chance must be between"):
+        Character(name="Hero", max_hp=10, crit_chance=crit_chance)
+
+
 @pytest.mark.parametrize("field", ["attack", "defense"])
 def test_negative_combat_stat_raises(field):
     with pytest.raises(ValueError, match=f"{field} must not be negative"):
